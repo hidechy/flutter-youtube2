@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart';
+import 'package:youtubeplayer2/screens/search_screen.dart';
 
 import '../model/youtube_data.dart';
 
@@ -49,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Map<String, String> headers2 = {'content-type': 'application/json'};
     String body2 = json.encode({"bunrui": 'blank'});
     Response response2 =
-    await post(Uri.parse(url2), headers: headers2, body: body2);
+        await post(Uri.parse(url2), headers: headers2, body: body2);
     final youtubeData = youtubeDataFromJson(response2.body);
     if (youtubeData.data.isNotEmpty) {
       _blankExists = true;
@@ -66,6 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Video Category'),
         backgroundColor: Colors.redAccent.withOpacity(0.3),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () => _goSearchScreen(),
+          icon: const Icon(Icons.search),
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -85,25 +90,25 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               (_blankExists)
                   ? Column(
-                children: [
-                  const Divider(
-                    color: Colors.redAccent,
-                    thickness: 3,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.all(10),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.redAccent.withOpacity(0.3),
-                      ),
-                      onPressed: () =>
-                          _goBunruiSettingScreen(bunrui: 'undefined'),
-                      child: const Text('分類する'),
-                    ),
-                  ),
-                ],
-              )
+                      children: [
+                        const Divider(
+                          color: Colors.redAccent,
+                          thickness: 3,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.all(10),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.redAccent.withOpacity(0.3),
+                            ),
+                            onPressed: () =>
+                                _goBunruiSettingScreen(bunrui: 'undefined'),
+                            child: const Text('分類する'),
+                          ),
+                        ),
+                      ],
+                    )
                   : Container()
             ],
           ),
@@ -167,6 +172,16 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => const HomeScreen(),
+      ),
+    );
+  }
+
+  ///
+  void _goSearchScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SearchScreen(),
       ),
     );
   }
