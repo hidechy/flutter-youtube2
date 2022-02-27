@@ -13,7 +13,7 @@ import '../utilities/utility.dart';
 
 //////////////////////////////////////////////////////////////////////////
 
-class SearchScreen extends ConsumerWidget {
+class SearchScreen extends StatelessWidget {
   final Utility _utility = Utility();
 
   final TextEditingController _searchTextController = TextEditingController();
@@ -24,7 +24,7 @@ class SearchScreen extends ConsumerWidget {
 
   ///
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Video Search'),
@@ -53,64 +53,62 @@ class SearchScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      _searchTextController.clear();
+
+                      //これはクリアしない
+                      // _sText = "";
+                      //これはクリアしない
+                    },
+                    child: const Icon(Icons.clear),
+                  ),
+                  const SizedBox(width: 5),
                   Expanded(
                     child: TextField(
                       style: const TextStyle(fontSize: 13),
                       controller: _searchTextController,
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_searchTextController.text == "") {
-                        Fluttertoast.showToast(
-                          msg: "検索ワードが入力されていません。",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                        );
+                  Consumer(
+                    builder: (context, ref, child) => ElevatedButton(
+                      onPressed: () {
+                        if (_searchTextController.text == "") {
+                          Fluttertoast.showToast(
+                            msg: "検索ワードが入力されていません。",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                          );
 
-                        return;
-                      }
+                          return;
+                        }
 
-                      _sText = _searchTextController.text;
+                        _sText = _searchTextController.text;
 
-                      ref
-                          .watch(videoSearchProvider.notifier)
-                          .getVideoData(_searchTextController.text);
-
-                      _searchTextController.clear();
-                    },
-                    child: const Text('Search'),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.redAccent.withOpacity(0.3),
+                        ref.watch(videoSearchProvider.notifier).getVideoData(
+                            searchText: _searchTextController.text);
+                      },
+                      child: const Text('Search'),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.redAccent.withOpacity(0.3),
+                      ),
                     ),
                   ),
                 ],
               ),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: Colors.yellowAccent.withOpacity(0.3),
-                ),
-                child: Text(_sText),
-              ),
               Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    final video = ref.watch(videoSearchProvider);
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final videoList = ref.watch(videoSearchProvider);
 
-                    var date = video[index].getdate;
-                    var year = date.substring(0, 4);
-                    var month = date.substring(4, 6);
-                    var day = date.substring(6);
-
-                    return _listItem(video, index, year, month, day);
+                    return ListView.separated(
+                      itemBuilder: (context, index) =>
+                          _listItem(videoList[index]),
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(color: Colors.white),
+                      itemCount: ref.watch(videoSearchProvider).length,
+                    );
                   },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const Divider(color: Colors.white);
-                  },
-                  itemCount: ref.watch(videoSearchProvider).length,
                 ),
               ),
             ],
@@ -121,8 +119,12 @@ class SearchScreen extends ConsumerWidget {
   }
 
   ///
-  Card _listItem(
-      List<Video> video, int index, String year, String month, String day) {
+  Card _listItem(Video video) {
+    var date = video.getdate;
+    var year = date.substring(0, 4);
+    var month = date.substring(4, 6);
+    var day = date.substring(6);
+
     return Card(
       color: Colors.black.withOpacity(0.1),
       child: ListTile(
@@ -131,6 +133,50 @@ class SearchScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.greenAccent.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 3),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          alignment: Alignment.center,
+                          child: (video.bunrui == 0)
+                              ? const Text('----------')
+                              : Text(video.bunrui),
+                        ),
+                      ),
+                      Consumer(
+                        builder: (context, ref, child) => GestureDetector(
+                          onTap: () {
+                            ref.watch(videoSearchProvider.notifier).eraseBunrui(
+                                  youtubeId: video.youtubeId,
+                                  searchText: _sText,
+                                );
+                          },
+                          child: Container(
+                            width: 50,
+                            child: const Text('Del'),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.greenAccent.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                    ],
+                  ),
+                ),
+              ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -139,12 +185,12 @@ class SearchScreen extends ConsumerWidget {
                     child: FadeInImage.assetNetwork(
                       placeholder: 'assets/images/no_image.png',
                       image: 'https://img.youtube'
-                          '.com/vi/${video[index].youtubeId}/mqdefault.jpg',
+                          '.com/vi/${video.youtubeId}/mqdefault.jpg',
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.only(left: 20),
-                    child: (video[index].special == '1')
+                    child: (video.special == '1')
                         ? const Icon(
                             Icons.star,
                             color: Colors.greenAccent,
@@ -157,10 +203,14 @@ class SearchScreen extends ConsumerWidget {
                   Expanded(
                     child: Container(
                       alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () =>
-                            _openBrowser(youtubeId: video[index].youtubeId),
-                        child: const Icon(Icons.link),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () =>
+                                _openBrowser(youtubeId: video.youtubeId),
+                            child: const Icon(Icons.link),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -170,11 +220,13 @@ class SearchScreen extends ConsumerWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(video[index].title),
+                  Text(video.title),
+                  const SizedBox(height: 5),
+                  Text(video.youtubeId),
                   const SizedBox(height: 5),
                   Container(
                     alignment: Alignment.topRight,
-                    child: Text(video[index].channelTitle),
+                    child: Text(video.channelTitle),
                   ),
                   const SizedBox(height: 5),
                   Container(
@@ -184,10 +236,8 @@ class SearchScreen extends ConsumerWidget {
                         TextSpan(text: '$year-$month-$day'),
                         const TextSpan(text: ' / '),
                         TextSpan(
-                          text: video[index].pubdate,
-                          style: const TextStyle(
-                            color: Colors.yellowAccent,
-                          ),
+                          text: video.pubdate,
+                          style: const TextStyle(color: Colors.yellowAccent),
                         ),
                       ]),
                     ),
@@ -224,7 +274,8 @@ final videoSearchProvider =
 class VideoSearchStateNotifier extends StateNotifier<List<Video>> {
   VideoSearchStateNotifier(List<Video> state) : super(state);
 
-  void getVideoData(String searchText) async {
+  ///
+  void getVideoData({required String searchText}) async {
     try {
       String url = "http://toyohide.work/BrainLog/api/getYoutubeList";
       Map<String, String> headers = {'content-type': 'application/json'};
@@ -233,6 +284,29 @@ class VideoSearchStateNotifier extends StateNotifier<List<Video>> {
           await post(Uri.parse(url), headers: headers, body: body);
       final youtubeData = youtubeDataFromJson(response.body);
       state = youtubeData.data;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  ///
+  void eraseBunrui(
+      {required String youtubeId, required String searchText}) async {
+    try {
+      List bunruiItems = [];
+      bunruiItems.add("'$youtubeId'");
+
+      Map<String, dynamic> _uploadData = {};
+      _uploadData['bunrui'] = 'erase';
+      _uploadData['youtube_id'] = bunruiItems.join(',');
+
+      String url = "http://toyohide.work/BrainLog/api/bunruiYoutubeData";
+      Map<String, String> headers = {'content-type': 'application/json'};
+      String body = json.encode(_uploadData);
+
+      await post(Uri.parse(url), headers: headers, body: body);
+
+      getVideoData(searchText: searchText);
     } catch (e) {
       throw e.toString();
     }
