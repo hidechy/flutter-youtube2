@@ -63,7 +63,7 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
     }
 
     Response response =
-    await post(Uri.parse(url), headers: headers, body: body);
+        await post(Uri.parse(url), headers: headers, body: body);
 
     final youtubeData = youtubeDataFromJson(response.body);
     _youtube = youtubeData.data;
@@ -100,7 +100,7 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
 
       ///
       children: list.items.map(
-            (item) {
+        (item) {
           return DragAndDropItem(
             child: Text(item.title),
           );
@@ -193,6 +193,17 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
                   lastListTargetSize: 0,
                 ),
               ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.all(10),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.redAccent.withOpacity(0.3),
+                  ),
+                  onPressed: () => displayThumbnail(),
+                  child: const Text('サムネイル表示'),
+                ),
+              ),
             ],
           ),
         ],
@@ -202,13 +213,13 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
 
   ///
   void onReorderListItem(
-      int oldItemIndex,
-      int oldListIndex,
-      int newItemIndex,
-      int newListIndex,
-      ) {
+    int oldItemIndex,
+    int oldListIndex,
+    int newItemIndex,
+    int newListIndex,
+  ) {
     setState(
-          () {
+      () {
         final oldListItems = lists[oldListIndex].children;
         final newListItems = lists[newListIndex].children;
 
@@ -220,9 +231,9 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
 
   ///
   void onReorderList(
-      int oldListIndex,
-      int newListIndex,
-      ) {}
+    int oldListIndex,
+    int newListIndex,
+  ) {}
 
   ///
   void _dispBunruiItem() async {
@@ -268,6 +279,93 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
     await Future.delayed(const Duration(seconds: 3));
 
     _goHomeScreen();
+  }
+
+  ///
+  void displayThumbnail() {
+    var shitamiItems = <Map>[];
+
+    for (var value in lists) {
+      var listName = '';
+      var match = reg.firstMatch(value.header.toString());
+      if (match != null) {
+        listName = match
+            .group(1)!
+            .replaceAll('(', '')
+            .replaceAll(')', '')
+            .replaceAll('"', '');
+      }
+
+      if (listName == "ALL") {
+        for (var child in value.children) {
+          var match2 = reg.firstMatch(child.child.toString());
+          if (match2 != null) {
+            var item = match2
+                .group(1)!
+                .replaceAll('(', '')
+                .replaceAll(')', '')
+                .replaceAll('"', '');
+
+            if (item != "-----") {
+              var exItem = (item).split(' // ');
+              Map _map = {};
+              _map['title'] = exItem[0];
+              _map['youtube_id'] = exItem[1];
+              shitamiItems.add(_map);
+            }
+          }
+        }
+      }
+    }
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.black.withOpacity(0.3),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: shitamiItems
+                .map(
+                  (value) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 180,
+                        child: FadeInImage.assetNetwork(
+                          placeholder: 'assets/images/no_image.png',
+                          image: 'https://img.youtube'
+                              '.com/vi/${value['youtube_id']}/mqdefault'
+                              '.jpg',
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        value['title'],
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      const SizedBox(height: 5),
+                      Container(
+                        alignment: Alignment.topRight,
+                        child: Text(
+                          value['youtube_id'],
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Divider(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ),
+    );
   }
 
   /////////////////////////////////////////////////////
