@@ -1,33 +1,24 @@
-// ignore_for_file: must_be_immutable
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../model/youtube_data.dart';
 import '../utilities/utility.dart';
 
-//////////////////////////////////////////////////////////////////////////
-
-class SearchScreen extends StatelessWidget {
+class ThreeDaysPickupScreen extends StatelessWidget {
   final Utility _utility = Utility();
 
-  final TextEditingController _searchTextController = TextEditingController();
-
-  SearchScreen({Key? key}) : super(key: key);
-
-  String _sText = "";
+  ThreeDaysPickupScreen({Key? key}) : super(key: key);
 
   ///
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Video Search'),
+        title: const Text('3days Pickup'),
         backgroundColor: Colors.redAccent.withOpacity(0.3),
         centerTitle: true,
 
@@ -51,51 +42,6 @@ class SearchScreen extends StatelessWidget {
           _utility.getBackGround(context: context),
           Column(
             children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      _searchTextController.clear();
-
-                      //これはクリアしない
-                      // _sText = "";
-                      //これはクリアしない
-                    },
-                    child: const Icon(Icons.clear),
-                  ),
-                  const SizedBox(width: 5),
-                  Expanded(
-                    child: TextField(
-                      style: const TextStyle(fontSize: 13),
-                      controller: _searchTextController,
-                    ),
-                  ),
-                  Consumer(
-                    builder: (context, ref, child) => ElevatedButton(
-                      onPressed: () {
-                        if (_searchTextController.text == "") {
-                          Fluttertoast.showToast(
-                            msg: "検索ワードが入力されていません。",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                          );
-
-                          return;
-                        }
-
-                        _sText = _searchTextController.text;
-
-                        ref.watch(videoSearchProvider.notifier).getVideoData(
-                            searchText: _searchTextController.text);
-                      },
-                      child: const Text('Search'),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.redAccent.withOpacity(0.3),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               Expanded(
                 child: Consumer(
                   builder: (context, ref, child) {
@@ -153,26 +99,6 @@ class SearchScreen extends StatelessWidget {
                               : Text(video.bunrui),
                         ),
                       ),
-                      Consumer(
-                        builder: (context, ref, child) => GestureDetector(
-                          onTap: () {
-                            ref.watch(videoSearchProvider.notifier).eraseBunrui(
-                                  youtubeId: video.youtubeId,
-                                  searchText: _sText,
-                                );
-                          },
-                          child: Container(
-                            width: 50,
-                            child: const Text('Del'),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.redAccent.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 5),
                     ],
                   ),
                 ),
@@ -266,7 +192,7 @@ class SearchScreen extends StatelessWidget {
 final videoSearchProvider =
     StateNotifierProvider.autoDispose<VideoSearchStateNotifier, List<Video>>(
         (ref) {
-  return VideoSearchStateNotifier([]);
+  return VideoSearchStateNotifier([])..getVideoData();
 });
 
 //////////////////////////////////////////////////////////////////////////
@@ -275,38 +201,15 @@ class VideoSearchStateNotifier extends StateNotifier<List<Video>> {
   VideoSearchStateNotifier(List<Video> state) : super(state);
 
   ///
-  void getVideoData({required String searchText}) async {
+  void getVideoData() async {
     try {
       String url = "http://toyohide.work/BrainLog/api/getYoutubeList";
       Map<String, String> headers = {'content-type': 'application/json'};
-      String body = json.encode({"bunrui": "search", "word": searchText});
+      String body = json.encode({"threedays": 1});
       Response response =
           await post(Uri.parse(url), headers: headers, body: body);
       final youtubeData = youtubeDataFromJson(response.body);
       state = youtubeData.data;
-    } catch (e) {
-      throw e.toString();
-    }
-  }
-
-  ///
-  void eraseBunrui(
-      {required String youtubeId, required String searchText}) async {
-    try {
-      List bunruiItems = [];
-      bunruiItems.add("'$youtubeId'");
-
-      Map<String, dynamic> _uploadData = {};
-      _uploadData['bunrui'] = 'erase';
-      _uploadData['youtube_id'] = bunruiItems.join(',');
-
-      String url = "http://toyohide.work/BrainLog/api/bunruiYoutubeData";
-      Map<String, String> headers = {'content-type': 'application/json'};
-      String body = json.encode(_uploadData);
-
-      await post(Uri.parse(url), headers: headers, body: body);
-
-      getVideoData(searchText: searchText);
     } catch (e) {
       throw e.toString();
     }

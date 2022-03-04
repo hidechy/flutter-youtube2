@@ -36,6 +36,10 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
 
   TextEditingController bunruiText = TextEditingController();
 
+  final List<String> _bunruiList = [];
+
+  Map<String, String> headers = {'content-type': 'application/json'};
+
   /// 初期動作
   @override
   void initState() {
@@ -47,9 +51,16 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
   /// 初期データ作成
   void _makeDefaultDisplayData() async {
     ////////////////////////////////////////
-    String url = "http://toyohide.work/BrainLog/api/getYoutubeList";
-    Map<String, String> headers = {'content-type': 'application/json'};
+    String url2 = "http://toyohide.work/BrainLog/api/getBunruiName";
+    Response response2 = await post(Uri.parse(url2), headers: headers);
+    var data2 = jsonDecode(response2.body);
+    for (var i = 0; i < data2['data'].length; i++) {
+      _bunruiList.add(data2['data'][i]);
+    }
+    ////////////////////////////////////////
 
+    ////////////////////////////////////////
+    String url = "http://toyohide.work/BrainLog/api/getYoutubeList";
     String body = '';
     switch (widget.bunrui) {
       case 'undefined':
@@ -321,51 +332,105 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Colors.black.withOpacity(0.3),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: shitamiItems
-                .map(
-                  (value) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 180,
-                        child: FadeInImage.assetNetwork(
-                          placeholder: 'assets/images/no_image.png',
-                          image: 'https://img.youtube'
-                              '.com/vi/${value['youtube_id']}/mqdefault'
-                              '.jpg',
+        backgroundColor: Colors.transparent,
+        title: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.redAccent.withOpacity(0.3),
+          ),
+          onPressed: () => displayBunruiName(),
+          child: const Text('分類名表示'),
+        ),
+        content: SizedBox(
+          height: MediaQuery.of(context).size.height - 50,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: shitamiItems
+                  .map(
+                    (value) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 180,
+                          child: FadeInImage.assetNetwork(
+                            placeholder: 'assets/images/no_image.png',
+                            image: 'https://img.youtube'
+                                '.com/vi/${value['youtube_id']}/mqdefault'
+                                '.jpg',
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        value['title'],
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      const SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.topRight,
-                        child: Text(
-                          value['youtube_id'],
+                        const SizedBox(height: 5),
+                        Text(
+                          value['title'],
                           style: const TextStyle(fontSize: 12),
                         ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: Divider(
-                          color: Colors.white,
+                        const SizedBox(height: 5),
+                        Container(
+                          alignment: Alignment.topRight,
+                          child: Text(
+                            value['youtube_id'],
+                            style: const TextStyle(fontSize: 12),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-                .toList(),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Divider(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  ///
+  void displayBunruiName() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: SizedBox(
+          height: MediaQuery.of(context).size.height - 50,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _bunruiList
+                  .map(
+                    (value) => GestureDetector(
+                      onTap: () => setBunruiName(value: value),
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 5),
+                        padding: const EdgeInsets.all(3),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Text(value),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  ///
+  void setBunruiName({required String value}) {
+    bunruiText.text = value;
+
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   /////////////////////////////////////////////////////

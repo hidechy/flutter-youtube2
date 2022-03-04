@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:youtubeplayer2/screens/search_screen.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:youtubeplayer2/screens/three_days_pickup_screen.dart';
+
 import '../model/youtube_data.dart';
 
 import 'dart:convert';
@@ -72,6 +75,10 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: const Icon(Icons.search),
         ),
         actions: <Widget>[
+          IconButton(
+            icon: const Icon(FontAwesomeIcons.diceThree),
+            onPressed: () => _goThreeDaysPickupScreen(),
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => _goHomeScreen(),
@@ -182,6 +189,16 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => SearchScreen(),
+      ),
+    );
+  }
+
+  ///
+  void _goThreeDaysPickupScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ThreeDaysPickupScreen(),
       ),
     );
   }
