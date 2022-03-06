@@ -148,7 +148,16 @@ class ThreeDaysPickupScreen extends StatelessWidget {
                 children: [
                   Text(video.title),
                   const SizedBox(height: 5),
-                  Text(video.youtubeId),
+                  Text.rich(
+                    TextSpan(children: [
+                      TextSpan(text: video.youtubeId),
+                      const TextSpan(text: ' / '),
+                      TextSpan(
+                        text: video.playtime,
+                        style: const TextStyle(color: Colors.yellowAccent),
+                      ),
+                    ]),
+                  ),
                   const SizedBox(height: 5),
                   Container(
                     alignment: Alignment.topRight,

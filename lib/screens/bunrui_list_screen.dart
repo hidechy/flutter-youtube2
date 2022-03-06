@@ -223,9 +223,15 @@ class _BunruiListScreenState extends State<BunruiListScreen> {
                 children: [
                   Text(_youtube[position].title),
                   const SizedBox(height: 5),
-                  Container(
-                    alignment: Alignment.topRight,
-                    child: Text(_youtube[position].youtubeId),
+                  Text.rich(
+                    TextSpan(children: [
+                      TextSpan(text: _youtube[position].youtubeId),
+                      const TextSpan(text: ' / '),
+                      TextSpan(
+                        text: _youtube[position].playtime,
+                        style: const TextStyle(color: Colors.yellowAccent),
+                      ),
+                    ]),
                   ),
                   const SizedBox(height: 5),
                   Container(

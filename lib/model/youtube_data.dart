@@ -36,6 +36,7 @@ class Video {
     required this.pubdate,
     required this.channelId,
     required this.channelTitle,
+    required this.playtime,
   });
 
   String youtubeId;
@@ -47,6 +48,7 @@ class Video {
   String pubdate;
   String channelId;
   String channelTitle;
+  String playtime;
 
   factory Video.fromJson(Map<String, dynamic> json) => Video(
         youtubeId: json["youtube_id"],
@@ -58,6 +60,7 @@ class Video {
         pubdate: json["pubdate"],
         channelId: json["channel_id"],
         channelTitle: json["channel_title"],
+        playtime: json["playtime"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -70,5 +73,6 @@ class Video {
         "pubdate": pubdate,
         "channel_id": channelId,
         "channel_title": channelTitle,
+        "playtime": playtime,
       };
 }
