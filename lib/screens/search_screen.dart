@@ -8,11 +8,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../model/bunrui.dart';
 import '../model/youtube_data.dart';
 import '../utilities/utility.dart';
 
 //////////////////////////////////////////////////////////////////////////
-
 class SearchScreen extends StatelessWidget {
   final Utility _utility = Utility();
 
@@ -41,7 +41,9 @@ class SearchScreen extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
@@ -70,8 +72,13 @@ class SearchScreen extends StatelessWidget {
                       controller: _searchTextController,
                     ),
                   ),
-                  Consumer(
-                    builder: (context, ref, child) => ElevatedButton(
+
+                  //①
+                  Consumer(builder: (context, ref, child) {
+                    final bunruiSetting =
+                        ref.watch(bunruiSettingProvider.state).state;
+
+                    return ElevatedButton(
                       onPressed: () {
                         if (_searchTextController.text == "") {
                           Fluttertoast.showToast(
@@ -86,30 +93,96 @@ class SearchScreen extends StatelessWidget {
                         _sText = _searchTextController.text;
 
                         ref.watch(videoSearchProvider.notifier).getVideoData(
-                            searchText: _searchTextController.text);
+                              searchText: _searchTextController.text,
+                              searchBunrui: bunruiSetting,
+                            );
                       },
                       child: const Text('Search'),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.redAccent.withOpacity(0.3),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
+                  //①
                 ],
               ),
+
+              //----------------------------------------------------
+
+              //②
+              Consumer(
+                builder: (BuildContext context, WidgetRef ref, Widget? child) {
+                  final bunruiSetting =
+                      ref.watch(bunruiSettingProvider.state).state;
+
+                  final bunrui = ref.watch(videoBunruiProvider);
+
+                  List<DropdownMenuItem<String>> _dropdownBunrui = [];
+
+                  _dropdownBunrui.add(
+                    const DropdownMenuItem(
+                      value: '',
+                      child: Text(''),
+                    ),
+                  );
+
+                  bunrui
+                      .map(
+                        (val) => _dropdownBunrui.add(
+                          DropdownMenuItem(
+                            value: val,
+                            child: Text(
+                              val,
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList();
+
+                  return Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        alignment: Alignment.topRight,
+                        child: DropdownButton(
+                          dropdownColor: Colors.black.withOpacity(0.1),
+                          items: _dropdownBunrui,
+                          value: bunruiSetting,
+                          onChanged: (value) {
+                            ref.watch(bunruiSettingProvider.state).state =
+                                value.toString();
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              //②
+
+              //----------------------------------------------------
+
+              Divider(
+                color: Colors.redAccent.withOpacity(0.3),
+                thickness: 2,
+              ),
               Expanded(
+                //③
                 child: Consumer(
                   builder: (context, ref, child) {
                     final videoList = ref.watch(videoSearchProvider);
 
                     return ListView.separated(
                       itemBuilder: (context, index) =>
-                          _listItem(videoList[index]),
+                          _listItem(video: videoList[index]),
                       separatorBuilder: (BuildContext context, int index) =>
                           const Divider(color: Colors.white),
                       itemCount: ref.watch(videoSearchProvider).length,
                     );
                   },
                 ),
+                //③
               ),
             ],
           ),
@@ -119,7 +192,7 @@ class SearchScreen extends StatelessWidget {
   }
 
   ///
-  Widget _listItem(Video video) {
+  Widget _listItem({required Video video}) {
     var date = video.getdate;
     var year = date.substring(0, 4);
     var month = date.substring(4, 6);
@@ -153,12 +226,18 @@ class SearchScreen extends StatelessWidget {
                               : Text(video.bunrui),
                         ),
                       ),
-                      Consumer(
-                        builder: (context, ref, child) => GestureDetector(
+
+                      //④
+                      Consumer(builder: (context, ref, child) {
+                        final bunruiSetting =
+                            ref.watch(bunruiSettingProvider.state).state;
+
+                        return GestureDetector(
                           onTap: () {
                             ref.watch(videoSearchProvider.notifier).eraseBunrui(
                                   youtubeId: video.youtubeId,
                                   searchText: _sText,
+                                  searchBunrui: bunruiSetting,
                                 );
                           },
                           child: Container(
@@ -170,8 +249,10 @@ class SearchScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      }),
+                      //④
+
                       const SizedBox(width: 5),
                     ],
                   ),
@@ -271,7 +352,6 @@ class SearchScreen extends StatelessWidget {
 }
 
 //////////////////////////////////////////////////////////////////////////
-
 final videoSearchProvider =
     StateNotifierProvider.autoDispose<VideoSearchStateNotifier, List<Video>>(
         (ref) {
@@ -279,16 +359,29 @@ final videoSearchProvider =
 });
 
 //////////////////////////////////////////////////////////////////////////
-
 class VideoSearchStateNotifier extends StateNotifier<List<Video>> {
   VideoSearchStateNotifier(List<Video> state) : super(state);
 
   ///
-  void getVideoData({required String searchText}) async {
+  void getVideoData({
+    required String searchText,
+    required String searchBunrui,
+  }) async {
     try {
       String url = "http://toyohide.work/BrainLog/api/getYoutubeList";
       Map<String, String> headers = {'content-type': 'application/json'};
-      String body = json.encode({"bunrui": "search", "word": searchText});
+
+      String body = "";
+      if (searchBunrui == "") {
+        body = json.encode({"bunrui": "search", "word": searchText});
+      } else {
+        body = json.encode({
+          "bunrui": "search",
+          "word": searchText,
+          "searchBunrui": searchBunrui,
+        });
+      }
+
       Response response =
           await post(Uri.parse(url), headers: headers, body: body);
       final youtubeData = youtubeDataFromJson(response.body);
@@ -300,7 +393,9 @@ class VideoSearchStateNotifier extends StateNotifier<List<Video>> {
 
   ///
   void eraseBunrui(
-      {required String youtubeId, required String searchText}) async {
+      {required String youtubeId,
+      required String searchText,
+      required String searchBunrui}) async {
     try {
       List bunruiItems = [];
       bunruiItems.add("'$youtubeId'");
@@ -315,9 +410,39 @@ class VideoSearchStateNotifier extends StateNotifier<List<Video>> {
 
       await post(Uri.parse(url), headers: headers, body: body);
 
-      getVideoData(searchText: searchText);
+      getVideoData(
+        searchText: searchText,
+        searchBunrui: searchBunrui,
+      );
     } catch (e) {
       throw e.toString();
     }
   }
 }
+
+//////////////////////////////////////////////////////////////////////////
+final videoBunruiProvider =
+    StateNotifierProvider.autoDispose<VideoBunruiStateNotifier, List<String>>(
+        (ref) {
+  return VideoBunruiStateNotifier([])..getVideoBunrui();
+});
+
+//////////////////////////////////////////////////////////////////////////
+class VideoBunruiStateNotifier extends StateNotifier<List<String>> {
+  VideoBunruiStateNotifier(List<String> state) : super(state);
+
+  ///
+  void getVideoBunrui() async {
+    try {
+      String url = "http://toyohide.work/BrainLog/api/getBunruiName";
+      Map<String, String> headers = {'content-type': 'application/json'};
+      Response response = await post(Uri.parse(url), headers: headers);
+      final bunrui = bunruiFromJson(response.body);
+      state = bunrui.data;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+}
+
+final bunruiSettingProvider = StateProvider.autoDispose((ref) => '');
