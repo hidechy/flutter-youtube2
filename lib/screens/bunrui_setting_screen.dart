@@ -439,7 +439,7 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => const HomeScreen(),
+        builder: (_) => HomeScreen(),
       ),
     );
   }

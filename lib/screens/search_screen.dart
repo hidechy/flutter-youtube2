@@ -20,7 +20,7 @@ class SearchScreen extends StatelessWidget {
 
   SearchScreen({Key? key}) : super(key: key);
 
-  String _sText = "";
+//  String _sText = "";
 
   ///
   @override
@@ -55,16 +55,46 @@ class SearchScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      _searchTextController.clear();
+                  //
+                  //
+                  //
+                  //
+                  //
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     _searchTextController.clear();
+                  //
+                  //     //これはクリアしない
+                  //     // _sText = "";
+                  //     //これはクリアしない
+                  //   },
+                  //   child: const Icon(Icons.clear),
+                  // ),
+                  //
+                  //
+                  //
+                  //
 
-                      //これはクリアしない
-                      // _sText = "";
-                      //これはクリアしない
+                  //(5)
+                  Consumer(
+                    builder:
+                        (BuildContext context, WidgetRef ref, Widget? child) {
+                      return GestureDetector(
+                        onTap: () {
+                          _searchTextController.clear();
+
+                          ref.watch(bunruiSettingProvider.state).state = "";
+
+                          //これはクリアしない
+                          // _sText = "";
+                          //これはクリアしない
+                        },
+                        child: const Icon(Icons.clear),
+                      );
                     },
-                    child: const Icon(Icons.clear),
                   ),
+                  //(5)
+
                   const SizedBox(width: 5),
                   Expanded(
                     child: TextField(
@@ -73,10 +103,13 @@ class SearchScreen extends StatelessWidget {
                     ),
                   ),
 
-                  //①
+                  //(1)
                   Consumer(builder: (context, ref, child) {
                     final bunruiSetting =
                         ref.watch(bunruiSettingProvider.state).state;
+
+//                    var searchWord = ref.watch(searchWordProvider.state)
+//                    .state;
 
                     return ElevatedButton(
                       onPressed: () {
@@ -90,7 +123,7 @@ class SearchScreen extends StatelessWidget {
                           return;
                         }
 
-                        _sText = _searchTextController.text;
+//                        searchWord = _searchTextController.text;
 
                         ref.watch(videoSearchProvider.notifier).getVideoData(
                               searchText: _searchTextController.text,
@@ -103,13 +136,13 @@ class SearchScreen extends StatelessWidget {
                       ),
                     );
                   }),
-                  //①
+                  //(1)
                 ],
               ),
 
               //----------------------------------------------------
 
-              //②
+              //(2)
               Consumer(
                 builder: (BuildContext context, WidgetRef ref, Widget? child) {
                   final bunruiSetting =
@@ -159,7 +192,7 @@ class SearchScreen extends StatelessWidget {
                   );
                 },
               ),
-              //②
+              //(2)
 
               //----------------------------------------------------
 
@@ -168,7 +201,7 @@ class SearchScreen extends StatelessWidget {
                 thickness: 2,
               ),
               Expanded(
-                //③
+                //(3)
                 child: Consumer(
                   builder: (context, ref, child) {
                     final videoList = ref.watch(videoSearchProvider);
@@ -182,7 +215,7 @@ class SearchScreen extends StatelessWidget {
                     );
                   },
                 ),
-                //③
+                //(3)
               ),
             ],
           ),
@@ -227,16 +260,19 @@ class SearchScreen extends StatelessWidget {
                         ),
                       ),
 
-                      //④
+                      //(4)
                       Consumer(builder: (context, ref, child) {
                         final bunruiSetting =
                             ref.watch(bunruiSettingProvider.state).state;
+
+                        final searchWord =
+                            ref.watch(searchWordProvider.state).state;
 
                         return GestureDetector(
                           onTap: () {
                             ref.watch(videoSearchProvider.notifier).eraseBunrui(
                                   youtubeId: video.youtubeId,
-                                  searchText: _sText,
+                                  searchText: searchWord,
                                   searchBunrui: bunruiSetting,
                                 );
                           },
@@ -251,7 +287,7 @@ class SearchScreen extends StatelessWidget {
                           ),
                         );
                       }),
-                      //④
+                      //(4)
 
                       const SizedBox(width: 5),
                     ],
@@ -421,6 +457,9 @@ class VideoSearchStateNotifier extends StateNotifier<List<Video>> {
 }
 
 //////////////////////////////////////////////////////////////////////////
+final searchWordProvider = StateProvider.autoDispose((ref) => '');
+
+//////////////////////////////////////////////////////////////////////////
 final videoBunruiProvider =
     StateNotifierProvider.autoDispose<VideoBunruiStateNotifier, List<String>>(
         (ref) {
@@ -445,4 +484,5 @@ class VideoBunruiStateNotifier extends StateNotifier<List<String>> {
   }
 }
 
+//////////////////////////////////////////////////////////////////////////
 final bunruiSettingProvider = StateProvider.autoDispose((ref) => '');
