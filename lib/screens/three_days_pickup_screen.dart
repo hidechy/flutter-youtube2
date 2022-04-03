@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:youtubeplayer2/screens/components/video_list_item.dart';
 
 import '../model/youtube_data.dart';
 import '../utilities/utility.dart';
@@ -103,81 +104,17 @@ class ThreeDaysPickupScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: FadeInImage.assetNetwork(
-                      placeholder: 'assets/images/no_image.png',
-                      image: 'https://img.youtube'
-                          '.com/vi/${video.youtubeId}/mqdefault.jpg',
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: (video.special == '1')
-                        ? const Icon(
-                            Icons.star,
-                            color: Colors.greenAccent,
-                          )
-                        : Icon(
-                            Icons.check_box_outline_blank,
-                            color: Colors.black.withOpacity(0.2),
-                          ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.topRight,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () =>
-                                _openBrowser(youtubeId: video.youtubeId),
-                            child: const Icon(Icons.link),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(video.title),
-                  const SizedBox(height: 5),
-                  Text.rich(
-                    TextSpan(children: [
-                      TextSpan(text: video.youtubeId),
-                      const TextSpan(text: ' / '),
-                      TextSpan(
-                        text: video.playtime,
-                        style: const TextStyle(color: Colors.yellowAccent),
-                      ),
-                    ]),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    alignment: Alignment.topRight,
-                    child: Text(video.channelTitle),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    alignment: Alignment.topRight,
-                    child: Text.rich(
-                      TextSpan(children: [
-                        TextSpan(text: '$year-$month-$day'),
-                        const TextSpan(text: ' / '),
-                        TextSpan(
-                          text: video.pubdate,
-                          style: const TextStyle(color: Colors.yellowAccent),
-                        ),
-                      ]),
-                    ),
-                  ),
-                ],
+              VideoListItem(
+                data: Video(
+                  youtubeId: video.youtubeId,
+                  title: video.title,
+                  url: video.url,
+                  channelId: video.channelId,
+                  channelTitle: video.channelTitle,
+                  playtime: video.playtime,
+                  getdate: video.getdate,
+                  pubdate: video.pubdate,
+                ),
               ),
             ],
           ),

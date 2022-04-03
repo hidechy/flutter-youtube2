@@ -10,6 +10,7 @@ import '../model/draggable_list.dart';
 import '../logic/logic.dart';
 
 import '../utilities/utility.dart';
+
 import 'home_screen.dart';
 
 class BunruiSettingScreen extends StatefulWidget {

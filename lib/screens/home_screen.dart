@@ -14,6 +14,7 @@ import 'search_screen.dart';
 import 'three_days_pickup_screen.dart';
 import 'bunrui_setting_screen.dart';
 import 'bunrui_list_screen.dart';
+import 'special_video_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -27,21 +28,9 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Video Category'),
         backgroundColor: Colors.redAccent.withOpacity(0.3),
         centerTitle: true,
-        leading: IconButton(
-          onPressed: () => _goSearchScreen(context: context),
-          icon: const Icon(Icons.search),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(FontAwesomeIcons.diceThree),
-            onPressed: () => _goThreeDaysPickupScreen(context: context),
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => _goHomeScreen(context: context),
-          ),
-        ],
+        actions: const <Widget>[],
       ),
+      drawer: dispDrawer(context: context),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -86,6 +75,85 @@ class HomeScreen extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  ///
+  Widget dispDrawer({required BuildContext context}) {
+    return Theme(
+      data: ThemeData(
+        canvasColor: Colors.black.withOpacity(0.3),
+      ),
+      child: Drawer(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              right: BorderSide(
+                color: Colors.redAccent.withOpacity(0.3),
+                width: 10,
+              ),
+            ),
+          ),
+          child: ListView(
+            children: <Widget>[
+              SizedBox(
+                height: 60,
+                child: DrawerHeader(
+                  child: Container(
+                    alignment: Alignment.topRight,
+                    child: const Text(
+                      'MENU',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.refresh, color: Colors.white),
+                title: const Text(
+                  "Refresh",
+                  style: TextStyle(fontSize: 12, color: Colors.white),
+                ),
+                onTap: () => _goHomeScreen(context: context),
+              ),
+              Divider(
+                color: Colors.redAccent.withOpacity(0.3),
+                thickness: 2,
+                indent: 10.0,
+                endIndent: 10.0,
+              ),
+              ListTile(
+                leading: const Icon(Icons.search, color: Colors.white),
+                title: const Text(
+                  "Search",
+                  style: TextStyle(fontSize: 12, color: Colors.white),
+                ),
+                onTap: () => _goSearchScreen(context: context),
+              ),
+              ListTile(
+                leading:
+                    const Icon(FontAwesomeIcons.diceThree, color: Colors.white),
+                title: const Text(
+                  "3days Pick Up",
+                  style: TextStyle(fontSize: 12, color: Colors.white),
+                ),
+                onTap: () => _goThreeDaysPickupScreen(context: context),
+              ),
+              ListTile(
+                leading: const Icon(Icons.star, color: Colors.white),
+                title: const Text(
+                  "Special Video",
+                  style: TextStyle(fontSize: 12, color: Colors.white),
+                ),
+                onTap: () => _goSpecialVideoScreen(context: context),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -177,6 +245,16 @@ class HomeScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) => ThreeDaysPickupScreen(),
+      ),
+    );
+  }
+
+  ///
+  void _goSpecialVideoScreen({required BuildContext context}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const SpecialVideoScreen(),
       ),
     );
   }
