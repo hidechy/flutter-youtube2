@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../model/bunrui.dart';
 import '../model/youtube_data.dart';
+import '../model/video.dart';
 
 import '../utilities/utility.dart';
 
@@ -254,7 +255,7 @@ class HomeScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const SpecialVideoScreen(),
+        builder: (_) => SpecialVideoScreen(),
       ),
     );
   }

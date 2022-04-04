@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:youtubeplayer2/model/youtube_data.dart';
 
-class VideoListItem extends StatefulWidget {
+import '../../model/video.dart';
+
+class VideoListItem extends StatelessWidget {
   const VideoListItem({Key? key, required this.data}) : super(key: key);
 
   final Video data;
 
   @override
-  _VideoListItemState createState() => _VideoListItemState();
-}
-
-class _VideoListItemState extends State<VideoListItem> {
-  final List<String> _selectedList = [];
-
-  @override
   Widget build(BuildContext context) {
-    var year = widget.data.getdate.substring(0, 4);
-    var month = widget.data.getdate.substring(4, 6);
-    var day = widget.data.getdate.substring(6);
+    var year = data.getdate.substring(0, 4);
+    var month = data.getdate.substring(4, 6);
+    var day = data.getdate.substring(6);
 
     return Card(
       color: Colors.black.withOpacity(0.1),
@@ -36,12 +30,12 @@ class _VideoListItemState extends State<VideoListItem> {
                     child: FadeInImage.assetNetwork(
                       placeholder: 'assets/images/no_image.png',
                       image:
-                          'https://img.youtube.com/vi/${widget.data.youtubeId}/mqdefault.jpg',
+                          'https://img.youtube.com/vi/${data.youtubeId}/mqdefault.jpg',
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.only(left: 20),
-                    child: (widget.data.special == '1')
+                    child: (data.special == '1')
                         ? const Icon(
                             Icons.star,
                             color: Colors.greenAccent,
@@ -55,8 +49,7 @@ class _VideoListItemState extends State<VideoListItem> {
                     child: Container(
                       alignment: Alignment.topRight,
                       child: GestureDetector(
-                        onTap: () =>
-                            _openBrowser(youtubeId: widget.data.youtubeId),
+                        onTap: () => _openBrowser(youtubeId: data.youtubeId),
                         child: const Icon(Icons.link),
                       ),
                     ),
@@ -67,14 +60,14 @@ class _VideoListItemState extends State<VideoListItem> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.data.title),
+                  Text(data.title),
                   const SizedBox(height: 5),
                   Text.rich(
                     TextSpan(children: [
-                      TextSpan(text: widget.data.youtubeId),
+                      TextSpan(text: data.youtubeId),
                       const TextSpan(text: ' / '),
                       TextSpan(
-                        text: widget.data.playtime,
+                        text: data.playtime,
                         style: const TextStyle(color: Colors.yellowAccent),
                       ),
                     ]),
@@ -82,7 +75,7 @@ class _VideoListItemState extends State<VideoListItem> {
                   const SizedBox(height: 5),
                   Container(
                     alignment: Alignment.topRight,
-                    child: Text(widget.data.channelTitle),
+                    child: Text(data.channelTitle),
                   ),
                   const SizedBox(height: 5),
                   Container(
@@ -92,7 +85,7 @@ class _VideoListItemState extends State<VideoListItem> {
                         TextSpan(text: '$year-$month-$day'),
                         const TextSpan(text: ' / '),
                         TextSpan(
-                          text: widget.data.pubdate,
+                          text: data.pubdate,
                           style: const TextStyle(
                             color: Colors.yellowAccent,
                           ),

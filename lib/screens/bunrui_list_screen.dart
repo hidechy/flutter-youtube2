@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-//import 'package:youtubeplayer/screens/youtube_play_screen.dart';
+import 'package:youtubeplayer2/screens/components/video_list_item.dart';
 
 import 'dart:convert';
 
 import '../model/youtube_data.dart';
+import '../model/video.dart';
 
 import '../utilities/utility.dart';
 
 import '../logic/logic.dart';
+
 import 'home_screen.dart';
 
 class BunruiListScreen extends StatefulWidget {
-  final String bunrui;
-
   const BunruiListScreen({Key? key, required this.bunrui}) : super(key: key);
+
+  final String bunrui;
 
   @override
   _BunruiListScreenState createState() => _BunruiListScreenState();
@@ -162,11 +163,6 @@ class _BunruiListScreenState extends State<BunruiListScreen> {
 
   /// リストアイテム表示
   Widget _listItem({required int position}) {
-    var date = _youtube[position].getdate;
-    var year = date.substring(0, 4);
-    var month = date.substring(4, 6);
-    var day = date.substring(6);
-
     return Card(
       color: _getSelectedBgColor(youtubeId: _youtube[position].youtubeId),
       child: ListTile(
@@ -177,86 +173,17 @@ class _BunruiListScreenState extends State<BunruiListScreen> {
             color: Colors.white,
           ),
         ),
-        title: DefaultTextStyle(
-          style: const TextStyle(fontSize: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: FadeInImage.assetNetwork(
-                      placeholder: 'assets/images/no_image.png',
-                      image:
-                          'https://img.youtube.com/vi/${_youtube[position].youtubeId}/mqdefault.jpg',
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: (_youtube[position].special == '1')
-                        ? const Icon(
-                            Icons.star,
-                            color: Colors.greenAccent,
-                          )
-                        : Icon(
-                            Icons.check_box_outline_blank,
-                            color: Colors.black.withOpacity(0.2),
-                          ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () => _openBrowser(
-                            youtubeId: _youtube[position].youtubeId),
-                        child: const Icon(Icons.link),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(_youtube[position].title),
-                  const SizedBox(height: 5),
-                  Text.rich(
-                    TextSpan(children: [
-                      TextSpan(text: _youtube[position].youtubeId),
-                      const TextSpan(text: ' / '),
-                      TextSpan(
-                        text: _youtube[position].playtime,
-                        style: const TextStyle(color: Colors.yellowAccent),
-                      ),
-                    ]),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    alignment: Alignment.topRight,
-                    child: Text(_youtube[position].channelTitle),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    alignment: Alignment.topRight,
-                    child: Text.rich(
-                      TextSpan(children: [
-                        TextSpan(text: '$year-$month-$day'),
-                        const TextSpan(text: ' / '),
-                        TextSpan(
-                          text: _youtube[position].pubdate,
-                          style: const TextStyle(
-                            color: Colors.yellowAccent,
-                          ),
-                        ),
-                      ]),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+        title: VideoListItem(
+          data: Video(
+            youtubeId: _youtube[position].youtubeId,
+            title: _youtube[position].title,
+            url: _youtube[position].url,
+            channelId: _youtube[position].channelId,
+            channelTitle: _youtube[position].channelTitle,
+            playtime: _youtube[position].playtime,
+            getdate: _youtube[position].getdate,
+            pubdate: _youtube[position].pubdate,
+            special: _youtube[position].special,
           ),
         ),
       ),

@@ -4,12 +4,16 @@ import 'package:http/http.dart';
 
 import '../model/bunrui.dart';
 import '../model/special_video.dart';
-import '../model/youtube_data.dart';
+import '../model/video.dart';
+
+import '../utilities/utility.dart';
 
 import './components/video_list_item.dart';
 
 class SpecialVideoScreen extends StatelessWidget {
-  const SpecialVideoScreen({Key? key}) : super(key: key);
+  SpecialVideoScreen({Key? key}) : super(key: key);
+
+  final Utility _utility = Utility();
 
   @override
   Widget build(BuildContext context) {
@@ -35,29 +39,34 @@ class SpecialVideoScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer(
-        builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          final specialVideo = ref.watch(specialVideoProvider);
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          _utility.getBackGround(context: context),
+          Consumer(
+            builder: (BuildContext context, WidgetRef ref, Widget? child) {
+              final specialVideo = ref.watch(specialVideoProvider);
 
-          final videoBunrui = ref.watch(videoBunruiProvider);
+              final videoBunrui = ref.watch(videoBunruiProvider);
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                if (specialVideo != null)
-                  _dispSpecialData(data: specialVideo, bunrui: videoBunrui),
-              ],
-            ),
-          );
-        },
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    if (specialVideo.isNotEmpty)
+                      _dispSpecialData(data: specialVideo, bunrui: videoBunrui),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 
   ///
   Widget _dispSpecialData(
-      {required Map<String, List<SpecialVideoData>> data,
-      required List<String> bunrui}) {
+      {required Map<String, List<Video>> data, required List<String> bunrui}) {
     List<Widget> _list = [];
 
     for (int i = 0; i < bunrui.length; i++) {
@@ -91,14 +100,15 @@ class SpecialVideoScreen extends StatelessWidget {
           _list.add(
             VideoListItem(
               data: Video(
+                youtubeId: data[bunrui[i]]![j].youtubeId,
                 title: data[bunrui[i]]![j].title,
                 url: data[bunrui[i]]![j].url,
-                playtime: data[bunrui[i]]![j].playtime,
-                youtubeId: data[bunrui[i]]![j].youtubeId,
                 channelId: data[bunrui[i]]![j].channelId,
                 channelTitle: data[bunrui[i]]![j].channelTitle,
+                playtime: data[bunrui[i]]![j].playtime,
                 getdate: data[bunrui[i]]![j].getdate,
-                pubdate: data[bunrui[i]]![j].pubdate.toString(),
+                pubdate: data[bunrui[i]]![j].pubdate,
+                special: data[bunrui[i]]![j].special,
               ),
             ),
           );
@@ -140,15 +150,14 @@ class VideoBunruiStateNotifier extends StateNotifier<List<String>> {
 
 //////////////////////////////////////////////////////////////////////////
 final specialVideoProvider = StateNotifierProvider.autoDispose<
-    SpecialVideoStateNotifier, Map<String, List<SpecialVideoData>>>((ref) {
+    SpecialVideoStateNotifier, Map<String, List<Video>>>((ref) {
   return SpecialVideoStateNotifier({})..getSpecialVideo();
 });
 
 //////////////////////////////////////////////////////////////////////////
 class SpecialVideoStateNotifier
-    extends StateNotifier<Map<String, List<SpecialVideoData>>> {
-  SpecialVideoStateNotifier(Map<String, List<SpecialVideoData>> state)
-      : super(state);
+    extends StateNotifier<Map<String, List<Video>>> {
+  SpecialVideoStateNotifier(Map<String, List<Video>> state) : super(state);
 
   ///
   void getSpecialVideo() async {

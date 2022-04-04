@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import '../model/youtube_data.dart';
 import '../model/draggable_list.dart';
+import '../model/video.dart';
 
 import '../logic/logic.dart';
 
@@ -14,9 +15,9 @@ import '../utilities/utility.dart';
 import 'home_screen.dart';
 
 class BunruiSettingScreen extends StatefulWidget {
-  final String bunrui;
-
   const BunruiSettingScreen({Key? key, required this.bunrui}) : super(key: key);
+
+  final String bunrui;
 
   ///
   @override

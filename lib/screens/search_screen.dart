@@ -6,22 +6,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:youtubeplayer2/screens/components/video_list_item.dart';
 
 import '../model/bunrui.dart';
 import '../model/youtube_data.dart';
+import '../model/video.dart';
+
 import '../utilities/utility.dart';
+
+import './components/video_list_item.dart';
 
 //////////////////////////////////////////////////////////////////////////
 class SearchScreen extends StatelessWidget {
+  SearchScreen({Key? key}) : super(key: key);
+
   final Utility _utility = Utility();
 
   final TextEditingController _searchTextController = TextEditingController();
-
-  SearchScreen({Key? key}) : super(key: key);
-
-//  String _sText = "";
 
   ///
   @override
@@ -202,11 +202,6 @@ class SearchScreen extends StatelessWidget {
 
   ///
   Widget _listItem({required Video video}) {
-    var date = video.getdate;
-    var year = date.substring(0, 4);
-    var month = date.substring(4, 6);
-    var day = date.substring(6);
-
     return Card(
       color: Colors.black.withOpacity(0.1),
       child: ListTile(
@@ -280,6 +275,7 @@ class SearchScreen extends StatelessWidget {
                   playtime: video.playtime,
                   getdate: video.getdate,
                   pubdate: video.pubdate,
+                  special: video.special,
                 ),
               ),
             ],
@@ -287,15 +283,6 @@ class SearchScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  ///
-  void _openBrowser({required String youtubeId}) async {
-    var url = 'https://youtu.be/$youtubeId';
-
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {}
   }
 }
 
