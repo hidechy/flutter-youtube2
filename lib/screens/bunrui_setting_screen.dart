@@ -57,7 +57,8 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
     Response response2 = await post(Uri.parse(url2), headers: headers);
     var data2 = jsonDecode(response2.body);
     for (var i = 0; i < data2['data'].length; i++) {
-      _bunruiList.add(data2['data'][i]);
+      var exValue = (data2['data'][i]).split('|');
+      _bunruiList.add(exValue[0]);
     }
     ////////////////////////////////////////
 

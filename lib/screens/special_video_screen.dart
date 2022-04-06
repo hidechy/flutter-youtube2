@@ -70,7 +70,9 @@ class SpecialVideoScreen extends StatelessWidget {
     List<Widget> _list = [];
 
     for (int i = 0; i < bunrui.length; i++) {
-      if (data[bunrui[i]] != null) {
+      var exValue = (bunrui[i]).split('|');
+
+      if (data[exValue[0]] != null) {
         _list.add(
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
@@ -87,7 +89,7 @@ class SpecialVideoScreen extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 2),
                       alignment: Alignment.center,
-                      child: Text(bunrui[i]),
+                      child: Text(exValue[0]),
                     ),
                   ),
                 ],
@@ -96,19 +98,19 @@ class SpecialVideoScreen extends StatelessWidget {
           ),
         );
 
-        for (int j = 0; j < data[bunrui[i]]!.length; j++) {
+        for (int j = 0; j < data[exValue[0]]!.length; j++) {
           _list.add(
             VideoListItem(
               data: Video(
-                youtubeId: data[bunrui[i]]![j].youtubeId,
-                title: data[bunrui[i]]![j].title,
-                url: data[bunrui[i]]![j].url,
-                channelId: data[bunrui[i]]![j].channelId,
-                channelTitle: data[bunrui[i]]![j].channelTitle,
-                playtime: data[bunrui[i]]![j].playtime,
-                getdate: data[bunrui[i]]![j].getdate,
-                pubdate: data[bunrui[i]]![j].pubdate,
-                special: data[bunrui[i]]![j].special,
+                youtubeId: data[exValue[0]]![j].youtubeId,
+                title: data[exValue[0]]![j].title,
+                url: data[exValue[0]]![j].url,
+                channelId: data[exValue[0]]![j].channelId,
+                channelTitle: data[exValue[0]]![j].channelTitle,
+                playtime: data[exValue[0]]![j].playtime,
+                getdate: data[exValue[0]]![j].getdate,
+                pubdate: data[exValue[0]]![j].pubdate,
+                special: data[exValue[0]]![j].special,
               ),
             ),
           );

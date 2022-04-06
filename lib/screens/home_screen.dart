@@ -32,6 +32,11 @@ class HomeScreen extends StatelessWidget {
         actions: const <Widget>[],
       ),
       drawer: dispDrawer(context: context),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _goHomeScreen(context: context),
+        backgroundColor: Colors.redAccent.withOpacity(0.3),
+        child: const Icon(Icons.refresh, color: Colors.white),
+      ),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -114,20 +119,6 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               ListTile(
-                leading: const Icon(Icons.refresh, color: Colors.white),
-                title: const Text(
-                  "Refresh",
-                  style: TextStyle(fontSize: 12, color: Colors.white),
-                ),
-                onTap: () => _goHomeScreen(context: context),
-              ),
-              Divider(
-                color: Colors.redAccent.withOpacity(0.3),
-                thickness: 2,
-                indent: 10.0,
-                endIndent: 10.0,
-              ),
-              ListTile(
                 leading: const Icon(Icons.search, color: Colors.white),
                 title: const Text(
                   "Search",
@@ -171,6 +162,8 @@ class HomeScreen extends StatelessWidget {
     List<Widget> _list = [];
 
     for (var element in videoBunrui) {
+      var exElement = (element).split('|');
+
       _list.add(
         Card(
           color: Colors.black.withOpacity(0.1),
@@ -179,7 +172,13 @@ class HomeScreen extends StatelessWidget {
               context: context,
               bunrui: element,
             ),
-            title: Text(element),
+            title: Text(
+              exElement[0],
+              style: TextStyle(
+                color:
+                    (exElement[1] == '1') ? Colors.greenAccent : Colors.white,
+              ),
+            ),
           ),
         ),
       );
@@ -212,10 +211,12 @@ class HomeScreen extends StatelessWidget {
     required String bunrui,
     required BuildContext context,
   }) {
+    var exBunrui = (bunrui).split('|');
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => BunruiListScreen(bunrui: bunrui),
+        builder: (_) => BunruiListScreen(bunrui: exBunrui[0]),
       ),
     );
   }
