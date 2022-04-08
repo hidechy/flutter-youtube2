@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
@@ -29,13 +30,40 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Video Category'),
         backgroundColor: Colors.redAccent.withOpacity(0.3),
         centerTitle: true,
+
+        //-------------------------//これを消すと「←」が出てくる（消さない）
+        leading: const Icon(
+          Icons.check_box_outline_blank,
+          color: Color(0xFF2e2e2e),
+        ),
+        //-------------------------//これを消すと「←」が出てくる（消さない）
+
         actions: const <Widget>[],
       ),
-      drawer: dispDrawer(context: context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _goHomeScreen(context: context),
-        backgroundColor: Colors.redAccent.withOpacity(0.3),
-        child: const Icon(Icons.refresh, color: Colors.white),
+      floatingActionButton: FabCircularMenu(
+        ringColor: Colors.redAccent.withOpacity(0.3),
+        fabOpenColor: Colors.redAccent.withOpacity(0.3),
+        fabCloseColor: Colors.pinkAccent.withOpacity(0.3),
+        ringWidth: 10,
+        ringDiameter: 200,
+        children: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.star, color: Colors.white),
+            onPressed: () => _goSpecialVideoScreen(context: context),
+          ),
+          IconButton(
+            icon: const Icon(FontAwesomeIcons.diceThree, color: Colors.white),
+            onPressed: () => _goThreeDaysPickupScreen(context: context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.white),
+            onPressed: () => _goSearchScreen(context: context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.yellowAccent),
+            onPressed: () => _goHomeScreen(context: context),
+          ),
+        ],
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -81,71 +109,6 @@ class HomeScreen extends StatelessWidget {
             },
           ),
         ],
-      ),
-    );
-  }
-
-  ///
-  Widget dispDrawer({required BuildContext context}) {
-    return Theme(
-      data: ThemeData(
-        canvasColor: Colors.black.withOpacity(0.3),
-      ),
-      child: Drawer(
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border(
-              right: BorderSide(
-                color: Colors.redAccent.withOpacity(0.3),
-                width: 10,
-              ),
-            ),
-          ),
-          child: ListView(
-            children: <Widget>[
-              SizedBox(
-                height: 60,
-                child: DrawerHeader(
-                  child: Container(
-                    alignment: Alignment.topRight,
-                    child: const Text(
-                      'MENU',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.search, color: Colors.white),
-                title: const Text(
-                  "Search",
-                  style: TextStyle(fontSize: 12, color: Colors.white),
-                ),
-                onTap: () => _goSearchScreen(context: context),
-              ),
-              ListTile(
-                leading:
-                    const Icon(FontAwesomeIcons.diceThree, color: Colors.white),
-                title: const Text(
-                  "3days Pick Up",
-                  style: TextStyle(fontSize: 12, color: Colors.white),
-                ),
-                onTap: () => _goThreeDaysPickupScreen(context: context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.star, color: Colors.white),
-                title: const Text(
-                  "Special Video",
-                  style: TextStyle(fontSize: 12, color: Colors.white),
-                ),
-                onTap: () => _goSpecialVideoScreen(context: context),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
