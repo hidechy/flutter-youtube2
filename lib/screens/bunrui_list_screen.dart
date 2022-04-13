@@ -128,28 +128,43 @@ class BunruiListScreen extends ConsumerWidget {
     return Card(
       color: _getSelectedBgColor(youtubeId: video.youtubeId),
       child: ListTile(
-        leading: GestureDetector(
-          onTap: () => _addSelectedAry(youtubeId: video.youtubeId),
-          child: const Icon(
-            Icons.control_point,
-            color: Colors.white,
-          ),
-        ),
-        title: DefaultTextStyle(
-          style: const TextStyle(fontSize: 12),
-          child: VideoListItem(
-            data: Video(
-              youtubeId: video.youtubeId,
-              title: video.title,
-              url: video.url,
-              channelId: video.channelId,
-              channelTitle: video.channelTitle,
-              playtime: video.playtime,
-              getdate: video.getdate,
-              pubdate: video.pubdate,
-              special: video.special,
+        contentPadding: EdgeInsets.all(0),
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: 10),
+            Column(
+              children: [
+                SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () => _addSelectedAry(youtubeId: video.youtubeId),
+                  child: const Icon(
+                    Icons.control_point,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
-          ),
+            SizedBox(width: 10),
+            Expanded(
+              child: DefaultTextStyle(
+                style: const TextStyle(fontSize: 12),
+                child: VideoListItem(
+                  data: Video(
+                    youtubeId: video.youtubeId,
+                    title: video.title,
+                    url: video.url,
+                    channelId: video.channelId,
+                    channelTitle: video.channelTitle,
+                    playtime: video.playtime,
+                    getdate: video.getdate,
+                    pubdate: video.pubdate,
+                    special: video.special,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
