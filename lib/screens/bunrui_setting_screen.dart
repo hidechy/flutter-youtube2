@@ -61,7 +61,6 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
       _bunruiList.add(exValue[0]);
     }
     ////////////////////////////////////////
-
     ////////////////////////////////////////
     String url = "http://toyohide.work/BrainLog/api/getYoutubeList";
     String body = '';

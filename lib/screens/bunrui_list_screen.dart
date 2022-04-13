@@ -128,14 +128,14 @@ class BunruiListScreen extends ConsumerWidget {
     return Card(
       color: _getSelectedBgColor(youtubeId: video.youtubeId),
       child: ListTile(
-        contentPadding: EdgeInsets.all(0),
+        contentPadding: const EdgeInsets.all(0),
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Column(
               children: [
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () => _addSelectedAry(youtubeId: video.youtubeId),
                   child: const Icon(
@@ -145,7 +145,7 @@ class BunruiListScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Expanded(
               child: DefaultTextStyle(
                 style: const TextStyle(fontSize: 12),
