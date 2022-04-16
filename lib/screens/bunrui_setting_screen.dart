@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
@@ -333,106 +335,14 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.transparent,
-        title: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.redAccent.withOpacity(0.3),
-          ),
-          onPressed: () => displayBunruiName(),
-          child: const Text('分類名表示'),
-        ),
-        content: SizedBox(
-          height: MediaQuery.of(context).size.height - 50,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: shitamiItems
-                  .map(
-                    (value) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 180,
-                          child: FadeInImage.assetNetwork(
-                            placeholder: 'assets/images/no_image.png',
-                            image: 'https://img.youtube'
-                                '.com/vi/${value['youtube_id']}/mqdefault'
-                                '.jpg',
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          value['title'],
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                        const SizedBox(height: 5),
-                        Container(
-                          alignment: Alignment.topRight,
-                          child: Text(
-                            value['youtube_id'],
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: Divider(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        ),
-      ),
+      builder: (_) {
+        return ThumbnailAlert(
+          shitamiItems: shitamiItems,
+          bunruiList: _bunruiList,
+          bunruiText: bunruiText,
+        );
+      },
     );
-  }
-
-  ///
-  void displayBunruiName() {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.transparent,
-        content: SizedBox(
-          height: MediaQuery.of(context).size.height - 50,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: _bunruiList
-                  .map(
-                    (value) => GestureDetector(
-                      onTap: () => setBunruiName(value: value),
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 5),
-                        padding: const EdgeInsets.all(3),
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
-                          ),
-                        ),
-                        child: Text(value),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  ///
-  void setBunruiName({required String value}) {
-    bunruiText.text = value;
-
-    Navigator.pop(context);
-    Navigator.pop(context);
   }
 
   /////////////////////////////////////////////////////
@@ -444,5 +354,157 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
         builder: (_) => HomeScreen(),
       ),
     );
+  }
+}
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+
+class ThumbnailAlert extends StatelessWidget {
+  ThumbnailAlert({
+    required this.shitamiItems,
+    Key? key,
+    required this.bunruiList,
+    required this.bunruiText,
+  }) : super(key: key);
+
+  List<Map<dynamic, dynamic>> shitamiItems;
+
+  List<String> bunruiList;
+
+  TextEditingController bunruiText;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.transparent,
+      title: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.redAccent.withOpacity(0.3),
+        ),
+        onPressed: () => displayBunruiName(context: context),
+        child: const Text('分類名表示'),
+      ),
+      content: SizedBox(
+        height: MediaQuery.of(context).size.height - 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: shitamiItems.map(
+              (value) {
+                final imageUrl =
+                    'https://img.youtube.com/vi/${value['youtube_id']}/mqdefault.jpg';
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 180,
+                      child: FadeInImage.assetNetwork(
+                        placeholder: 'assets/images/no_image.png',
+                        image: imageUrl,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      value['title']!,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    const SizedBox(height: 5),
+                    Container(
+                      alignment: Alignment.topRight,
+                      child: Text(
+                        value['youtube_id']!,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Divider(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  ///
+  void displayBunruiName({required BuildContext context}) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return BunruiAlert(
+          bunruiList: bunruiList,
+          bunruiText: bunruiText,
+        );
+      },
+    );
+  }
+}
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+
+class BunruiAlert extends StatelessWidget {
+  BunruiAlert({Key? key, required this.bunruiList, required this.bunruiText})
+      : super(key: key);
+
+  List<String> bunruiList;
+  TextEditingController bunruiText;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.transparent,
+      content: SizedBox(
+        height: MediaQuery.of(context).size.height - 50,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: bunruiList
+                .map(
+                  (value) => GestureDetector(
+                    onTap: () => setBunruiName(
+                      value: value,
+                      context: context,
+                    ),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      padding: const EdgeInsets.all(3),
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Text(value),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  ///
+  void setBunruiName({required String value, required BuildContext context}) {
+    bunruiText.text = value;
+
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 }

@@ -135,19 +135,21 @@ class SearchScreen extends StatelessWidget {
                     ),
                   );
 
-                  bunrui
-                      .map(
-                        (val) => _dropdownBunrui.add(
-                          DropdownMenuItem(
-                            value: val,
-                            child: Text(
-                              val,
-                              style: const TextStyle(fontSize: 13),
-                            ),
+                  bunrui.map(
+                    (val) {
+                      var exVal = (val).split('|');
+
+                      _dropdownBunrui.add(
+                        DropdownMenuItem(
+                          value: exVal[0],
+                          child: Text(
+                            exVal[0],
+                            style: const TextStyle(fontSize: 13),
                           ),
                         ),
-                      )
-                      .toList();
+                      );
+                    },
+                  ).toList();
 
                   return Column(
                     children: [
