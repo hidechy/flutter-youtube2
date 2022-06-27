@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 
 import '../model/bunrui.dart';
@@ -92,11 +92,11 @@ class SearchScreen extends StatelessWidget {
                     return ElevatedButton(
                       onPressed: () {
                         if (_searchTextController.text == "") {
-                          Fluttertoast.showToast(
-                            msg: "検索ワードが入力されていません。",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                          );
+                          // Fluttertoast.showToast(
+                          //   msg: "検索ワードが入力されていません。",
+                          //   toastLength: Toast.LENGTH_SHORT,
+                          //   gravity: ToastGravity.CENTER,
+                          // );
 
                           return;
                         }

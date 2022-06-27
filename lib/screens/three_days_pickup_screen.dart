@@ -1,8 +1,11 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:youtubeplayer2/screens/bunrui_list_screen.dart';
 
 import '../model/youtube_data.dart';
 import '../model/video.dart';
@@ -16,9 +19,13 @@ class ThreeDaysPickupScreen extends StatelessWidget {
 
   final Utility _utility = Utility();
 
+  late BuildContext _context;
+
   ///
   @override
   Widget build(BuildContext context) {
+    _context = context;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('3days Pickup'),
@@ -92,9 +99,42 @@ class ThreeDaysPickupScreen extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 2),
                           alignment: Alignment.center,
-                          child: (video.bunrui == 0)
-                              ? const Text('----------')
-                              : Text(video.bunrui),
+                          child: Row(
+                            children: [
+                              Expanded(child: Container()),
+                              Expanded(
+                                  flex: 5,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Container(
+                                      child: (video.bunrui == 0)
+                                          ? const Text('----------')
+                                          : Text(video.bunrui),
+                                    ),
+                                  )),
+                              Expanded(
+                                  child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushReplacement(
+                                    _context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BunruiListScreen(
+                                          bunrui: video.bunrui),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: 50,
+                                  child: const Text('Go'),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: Colors.yellowAccent.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              )),
+                            ],
+                          ),
                         ),
                       ),
                     ],
