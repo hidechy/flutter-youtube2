@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 //import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 
@@ -14,6 +15,7 @@ import '../model/video.dart';
 import '../utilities/utility.dart';
 
 import './components/video_list_item.dart';
+import 'bunrui_list_screen.dart';
 
 //////////////////////////////////////////////////////////////////////////
 class SearchScreen extends StatelessWidget {
@@ -23,9 +25,13 @@ class SearchScreen extends StatelessWidget {
 
   final TextEditingController _searchTextController = TextEditingController();
 
+  late BuildContext _context;
+
   ///
   @override
   Widget build(BuildContext context) {
+    _context = context;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Video Search'),
@@ -224,6 +230,42 @@ class SearchScreen extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
+                        //(4)
+                        child: Consumer(builder: (context, ref, child) {
+                          final bunruiSetting =
+                              ref.watch(bunruiSettingProvider.state).state;
+
+                          final searchWord =
+                              ref.watch(searchWordProvider.state).state;
+
+                          return MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: () {
+                                ref
+                                    .watch(videoSearchProvider.notifier)
+                                    .eraseBunrui(
+                                      youtubeId: video.youtubeId,
+                                      searchText: searchWord,
+                                      searchBunrui: bunruiSetting,
+                                    );
+                              },
+                              child: Container(
+                                width: 50,
+                                child: const Text('Del'),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                        //(4)
+                      ),
+                      Expanded(
+                        flex: 5,
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 2),
                           alignment: Alignment.center,
@@ -232,37 +274,31 @@ class SearchScreen extends StatelessWidget {
                               : Text(video.bunrui),
                         ),
                       ),
-
-                      //(4)
-                      Consumer(builder: (context, ref, child) {
-                        final bunruiSetting =
-                            ref.watch(bunruiSettingProvider.state).state;
-
-                        final searchWord =
-                            ref.watch(searchWordProvider.state).state;
-
-                        return GestureDetector(
-                          onTap: () {
-                            ref.watch(videoSearchProvider.notifier).eraseBunrui(
-                                  youtubeId: video.youtubeId,
-                                  searchText: searchWord,
-                                  searchBunrui: bunruiSetting,
-                                );
-                          },
-                          child: Container(
-                            width: 50,
-                            child: const Text('Del'),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.redAccent.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(20),
+                      Expanded(
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                _context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      BunruiListScreen(bunrui: video.bunrui),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: 50,
+                              child: const Text('Go'),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.yellowAccent.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
                             ),
                           ),
-                        );
-                      }),
-                      //(4)
-
-                      const SizedBox(width: 5),
+                        ),
+                      ),
                     ],
                   ),
                 ),

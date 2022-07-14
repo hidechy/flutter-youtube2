@@ -14,11 +14,40 @@ class VideoListItem extends StatelessWidget {
     var month = data.getdate.substring(4, 6);
     var day = data.getdate.substring(6);
 
-    return Card(
-      color: Colors.black.withOpacity(0.1),
-      child: ListTile(
-        title: DefaultTextStyle(
-          style: const TextStyle(fontSize: 12),
+    return Stack(
+      children: [
+        Positioned(
+          right: -60,
+          top: -60,
+          child: Container(
+            padding: EdgeInsets.all(60),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                width: 10,
+                color: Colors.redAccent.withOpacity(0.3),
+              ),
+              color: Colors.transparent,
+            ),
+          ),
+        ),
+        Positioned(
+          left: -80,
+          bottom: -80,
+          child: Container(
+            padding: EdgeInsets.all(60),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                width: 10,
+                color: Colors.redAccent.withOpacity(0.3),
+              ),
+              color: Colors.transparent,
+            ),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -48,57 +77,55 @@ class VideoListItem extends StatelessWidget {
                   Expanded(
                     child: Container(
                       alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () => _openBrowser(youtubeId: data.youtubeId),
-                        child: const Icon(Icons.link),
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: () => _openBrowser(youtubeId: data.youtubeId),
+                          child: Icon(Icons.link),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(data.title),
-                  const SizedBox(height: 5),
-                  Text.rich(
-                    TextSpan(children: [
-                      TextSpan(text: data.youtubeId),
-                      const TextSpan(text: ' / '),
-                      TextSpan(
-                        text: data.playtime,
-                        style: const TextStyle(color: Colors.yellowAccent),
+              Text(data.title),
+              const SizedBox(height: 5),
+              Text.rich(
+                TextSpan(children: [
+                  TextSpan(text: data.youtubeId),
+                  const TextSpan(text: ' / '),
+                  TextSpan(
+                    text: data.playtime,
+                    style: const TextStyle(color: Colors.yellowAccent),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: 5),
+              Container(
+                alignment: Alignment.topRight,
+                child: Text(data.channelTitle),
+              ),
+              const SizedBox(height: 5),
+              Container(
+                alignment: Alignment.topRight,
+                child: Text.rich(
+                  TextSpan(children: [
+                    TextSpan(text: '$year-$month-$day'),
+                    const TextSpan(text: ' / '),
+                    TextSpan(
+                      text: data.pubdate,
+                      style: const TextStyle(
+                        color: Colors.yellowAccent,
                       ),
-                    ]),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    alignment: Alignment.topRight,
-                    child: Text(data.channelTitle),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    alignment: Alignment.topRight,
-                    child: Text.rich(
-                      TextSpan(children: [
-                        TextSpan(text: '$year-$month-$day'),
-                        const TextSpan(text: ' / '),
-                        TextSpan(
-                          text: data.pubdate,
-                          style: const TextStyle(
-                            color: Colors.yellowAccent,
-                          ),
-                        ),
-                      ]),
                     ),
-                  ),
-                ],
+                  ]),
+                ),
               ),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 

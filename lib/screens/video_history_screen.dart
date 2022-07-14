@@ -1,7 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
@@ -15,21 +13,20 @@ import '../utilities/utility.dart';
 
 import './components/video_list_item.dart';
 
-class ThreeDaysPickupScreen extends StatelessWidget {
-  ThreeDaysPickupScreen({Key? key}) : super(key: key);
+class VideoHistoryScreen extends ConsumerWidget {
+  VideoHistoryScreen({Key? key}) : super(key: key);
 
   final Utility _utility = Utility();
 
   late BuildContext _context;
 
-  ///
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     _context = context;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('3days Pickup'),
+        title: const Text('Video History'),
         backgroundColor: Colors.redAccent.withOpacity(0.3),
         centerTitle: true,
 
@@ -56,14 +53,14 @@ class ThreeDaysPickupScreen extends StatelessWidget {
               Expanded(
                 child: Consumer(
                   builder: (context, ref, child) {
-                    final videoList = ref.watch(videoSearchProvider);
+                    final videoList = ref.watch(videoHistoryProvider);
 
                     return ListView.separated(
                       itemBuilder: (context, index) =>
                           _listItem(videoList[index]),
                       separatorBuilder: (BuildContext context, int index) =>
                           const Divider(color: Colors.white),
-                      itemCount: ref.watch(videoSearchProvider).length,
+                      itemCount: ref.watch(videoHistoryProvider).length,
                     );
                   },
                 ),
@@ -77,6 +74,12 @@ class ThreeDaysPickupScreen extends StatelessWidget {
 
   ///
   Widget _listItem(Video video) {
+    final DateTime threeDaysAgo =
+        DateTime.now().add(const Duration(days: 3) * -1);
+
+    int diffDays =
+        DateTime.parse(video.getdate).difference(threeDaysAgo).inDays;
+
     return Card(
       color: Colors.black.withOpacity(0.1),
       child: ListTile(
@@ -89,7 +92,9 @@ class ThreeDaysPickupScreen extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.redAccent.withOpacity(0.3),
+                  color: (diffDays >= 0)
+                      ? Colors.redAccent.withOpacity(0.3)
+                      : Colors.blueAccent.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Container(
@@ -172,7 +177,7 @@ class ThreeDaysPickupScreen extends StatelessWidget {
 
 //////////////////////////////////////////////////////////////////////////
 
-final videoSearchProvider =
+final videoHistoryProvider =
     StateNotifierProvider.autoDispose<VideoSearchStateNotifier, List<Video>>(
         (ref) {
   return VideoSearchStateNotifier([])..getVideoData();
@@ -188,9 +193,8 @@ class VideoSearchStateNotifier extends StateNotifier<List<Video>> {
     try {
       String url = "http://toyohide.work/BrainLog/api/getYoutubeList";
       Map<String, String> headers = {'content-type': 'application/json'};
-      String body = json.encode({"threedays": 1});
-      Response response =
-          await post(Uri.parse(url), headers: headers, body: body);
+
+      Response response = await post(Uri.parse(url), headers: headers);
       final youtubeData = youtubeDataFromJson(response.body);
       state = youtubeData.data;
     } catch (e) {

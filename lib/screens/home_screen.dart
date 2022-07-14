@@ -4,7 +4,8 @@ import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'video_history_screen.dart';
 
 import '../model/bunrui.dart';
 import '../model/youtube_data.dart';
@@ -13,7 +14,6 @@ import '../model/video.dart';
 import '../utilities/utility.dart';
 
 import 'search_screen.dart';
-import 'three_days_pickup_screen.dart';
 import 'bunrui_setting_screen.dart';
 import 'bunrui_list_screen.dart';
 import 'special_video_screen.dart';
@@ -40,6 +40,9 @@ class HomeScreen extends StatelessWidget {
 
         actions: const <Widget>[],
       ),
+
+      //
+
       floatingActionButton: FabCircularMenu(
         ringColor: Colors.redAccent.withOpacity(0.3),
         fabOpenColor: Colors.redAccent.withOpacity(0.3),
@@ -52,19 +55,31 @@ class HomeScreen extends StatelessWidget {
             onPressed: () => _goSpecialVideoScreen(context: context),
           ),
           IconButton(
-            icon: const Icon(FontAwesomeIcons.diceThree, color: Colors.white),
-            onPressed: () => _goThreeDaysPickupScreen(context: context),
+            icon: const Icon(Icons.arrow_downward, color: Colors.white),
+            onPressed: () => _goVideoHistoryScreen(context: context),
           ),
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white),
             onPressed: () => _goSearchScreen(context: context),
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.yellowAccent),
-            onPressed: () => _goHomeScreen(context: context),
+          Consumer(
+            builder: (BuildContext context, WidgetRef ref, Widget? child) {
+              final videoBunruiViewModel =
+                  ref.watch(videoBunruiProvider.notifier);
+
+              return IconButton(
+                icon: const Icon(Icons.refresh, color: Colors.yellowAccent),
+                onPressed: () {
+                  videoBunruiViewModel.getVideoBunrui();
+                },
+              );
+            },
           ),
         ],
       ),
+
+      //
+
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -128,20 +143,63 @@ class HomeScreen extends StatelessWidget {
       var exElement = (element).split('|');
 
       _list.add(
-        Card(
-          color: Colors.black.withOpacity(0.1),
-          child: ListTile(
-            onTap: () => _goBunruiListScreen(
-              context: context,
-              bunrui: element,
-            ),
-            title: Text(
-              exElement[0],
-              style: TextStyle(
-                color:
-                    (exElement[1] == '1') ? Colors.greenAccent : Colors.white,
+        InkWell(
+          onTap: () => _goBunruiListScreen(
+            context: context,
+            bunrui: element,
+          ),
+          child: Stack(
+            children: [
+              //--------------------
+              // ずれた半円
+
+              Positioned(
+                right: -50,
+                top: -40,
+                child: Container(
+                  padding: EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      width: 5,
+                      color: Colors.redAccent.withOpacity(0.5),
+                    ),
+                    color: Colors.transparent,
+                  ),
+                ),
               ),
-            ),
+
+              Positioned(
+                left: -50,
+                bottom: -40,
+                child: Container(
+                  padding: EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      width: 5,
+                      color: Colors.redAccent.withOpacity(0.5),
+                    ),
+                    color: Colors.transparent,
+                  ),
+                ),
+              ),
+
+              //--------------------
+
+              Container(
+                padding: EdgeInsets.only(top: 20, left: 50, bottom: 20),
+                margin: EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                ),
+                width: double.infinity,
+                child: Text(
+                  exElement[0],
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -185,16 +243,6 @@ class HomeScreen extends StatelessWidget {
   }
 
   ///
-  void _goHomeScreen({required BuildContext context}) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => HomeScreen(),
-      ),
-    );
-  }
-
-  ///
   void _goSearchScreen({required BuildContext context}) {
     Navigator.push(
       context,
@@ -205,21 +253,21 @@ class HomeScreen extends StatelessWidget {
   }
 
   ///
-  void _goThreeDaysPickupScreen({required BuildContext context}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ThreeDaysPickupScreen(),
-      ),
-    );
-  }
-
-  ///
   void _goSpecialVideoScreen({required BuildContext context}) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => SpecialVideoScreen(),
+      ),
+    );
+  }
+
+  ///
+  void _goVideoHistoryScreen({required BuildContext context}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VideoHistoryScreen(),
       ),
     );
   }

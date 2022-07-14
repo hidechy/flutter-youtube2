@@ -100,17 +100,21 @@ class SpecialVideoScreen extends StatelessWidget {
 
         for (int j = 0; j < data[exValue[0]]!.length; j++) {
           _list.add(
-            VideoListItem(
-              data: Video(
-                youtubeId: data[exValue[0]]![j].youtubeId,
-                title: data[exValue[0]]![j].title,
-                url: data[exValue[0]]![j].url,
-                channelId: data[exValue[0]]![j].channelId,
-                channelTitle: data[exValue[0]]![j].channelTitle,
-                playtime: data[exValue[0]]![j].playtime,
-                getdate: data[exValue[0]]![j].getdate,
-                pubdate: data[exValue[0]]![j].pubdate,
-                special: data[exValue[0]]![j].special,
+            Container(
+              decoration: BoxDecoration(color: Colors.black.withOpacity(0.3)),
+              margin: EdgeInsets.all(10),
+              child: VideoListItem(
+                data: Video(
+                  youtubeId: data[exValue[0]]![j].youtubeId,
+                  title: data[exValue[0]]![j].title,
+                  url: data[exValue[0]]![j].url,
+                  channelId: data[exValue[0]]![j].channelId,
+                  channelTitle: data[exValue[0]]![j].channelTitle,
+                  playtime: data[exValue[0]]![j].playtime,
+                  getdate: data[exValue[0]]![j].getdate,
+                  pubdate: data[exValue[0]]![j].pubdate,
+                  special: data[exValue[0]]![j].special,
+                ),
               ),
             ),
           );
