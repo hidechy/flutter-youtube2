@@ -4,9 +4,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../model/video.dart';
 
 class VideoListItem extends StatelessWidget {
-  const VideoListItem({Key? key, required this.data}) : super(key: key);
+  const VideoListItem({Key? key, required this.data, required this.linkDisplay})
+      : super(key: key);
 
   final Video data;
+  final bool linkDisplay;
 
   @override
   Widget build(BuildContext context) {
@@ -75,16 +77,19 @@ class VideoListItem extends StatelessWidget {
                           ),
                   ),
                   Expanded(
-                    child: Container(
-                      alignment: Alignment.topRight,
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: () => _openBrowser(youtubeId: data.youtubeId),
-                          child: const Icon(Icons.link),
-                        ),
-                      ),
-                    ),
+                    child: (linkDisplay)
+                        ? Container(
+                            alignment: Alignment.topRight,
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () =>
+                                    _openBrowser(youtubeId: data.youtubeId),
+                                child: const Icon(Icons.link),
+                              ),
+                            ),
+                          )
+                        : Container(),
                   ),
                 ],
               ),

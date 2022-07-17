@@ -1,26 +1,23 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 
 import '../data/bunrui_list_state.dart';
-
 import '../model/video.dart';
-import '../model/youtube_data.dart';
 
+import 'package:http/http.dart';
+
+import '../model/youtube_data.dart';
 import '../utilities/utility.dart';
+import 'components/video_list_item.dart';
+
+import 'dart:convert';
 
 import 'home_screen.dart';
 
-import 'components/video_list_item.dart';
-
-class BunruiListScreen extends ConsumerWidget {
-  BunruiListScreen({Key? key, required this.bunrui}) : super(key: key);
-
-  final String bunrui;
+class VideoRecyclingScreen extends ConsumerWidget {
+  VideoRecyclingScreen({Key? key}) : super(key: key);
 
   final Utility _utility = Utility();
 
@@ -28,17 +25,16 @@ class BunruiListScreen extends ConsumerWidget {
 
   late BuildContext _context;
 
+  ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     _ref = ref;
 
     _context = context;
 
-    final state = ref.watch(bunruiListProvider(bunrui));
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(bunrui),
+        title: const Text('Video Recycling'),
         backgroundColor: Colors.redAccent.withOpacity(0.3),
         centerTitle: true,
 
@@ -52,20 +48,19 @@ class BunruiListScreen extends ConsumerWidget {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => _goHomeScreen(),
+            onPressed: () => Navigator.pop(context),
           ),
         ],
       ),
       body: Stack(
         fit: StackFit.expand,
         children: [
-          _utility.getBackGround(),
+          _utility.getBackGround(context: context),
           Column(
             children: [
-              if (state.youtubeList.isNotEmpty)
-                Expanded(
-                  child: _movieList(videoList: state.youtubeList),
-                ),
+              Expanded(
+                child: _getVideoList(),
+              ),
 
               //-----------------------------//
               // 左右の半円と点線を引く方法
@@ -136,14 +131,10 @@ class BunruiListScreen extends ConsumerWidget {
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
                   children: [
+                    Expanded(child: Container()),
+                    const SizedBox(width: 10),
                     Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.redAccent.withOpacity(0.3),
-                        ),
-                        onPressed: () => _uploadSpecialItems(),
-                        child: const Text('選出変更'),
-                      ),
+                      child: Container(),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -151,18 +142,8 @@ class BunruiListScreen extends ConsumerWidget {
                         style: ElevatedButton.styleFrom(
                           primary: Colors.redAccent.withOpacity(0.3),
                         ),
-                        onPressed: () => _uploadEraseItems(),
-                        child: const Text('分類消去'),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.redAccent.withOpacity(0.3),
-                        ),
-                        onPressed: () => _uploadDeleteItems(),
-                        child: const Text('削除'),
+                        onPressed: () => _uploadRecyclingItems(),
+                        child: const Text('復活'),
                       ),
                     ),
                   ],
@@ -176,77 +157,109 @@ class BunruiListScreen extends ConsumerWidget {
   }
 
   ///
-  Widget _movieList({required List<Video> videoList}) {
-    return ListView.separated(
-      itemCount: videoList.length,
-      itemBuilder: (context, int position) =>
-          _listItem(video: videoList[position]),
-      separatorBuilder: (_, __) {
-        return const Divider(color: Colors.white);
-      },
-    );
-  }
+  Widget _getVideoList() {
+    final videoRecyclingState = _ref.watch(videoRecyclingProvider);
 
-  ///
-  Widget _listItem({required Video video}) {
-    return Card(
-      color: _getSelectedBgColor(youtubeId: video.youtubeId),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(0),
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(width: 10),
-            Column(
+    final DateTime threeDaysAgo =
+        DateTime.now().add(const Duration(days: 3) * -1);
+
+    return ListView.separated(
+      itemBuilder: (_context, index) {
+        var video = videoRecyclingState[index];
+
+        int diffDays =
+            DateTime.parse(video.getdate).difference(threeDaysAgo).inDays;
+
+        return Card(
+          color: _getSelectedBgColor(youtubeId: video.youtubeId),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(0),
+            title: Column(
               children: [
-                const SizedBox(height: 10),
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () => _addSelectedAry(youtubeId: video.youtubeId),
-                    child: const Icon(
-                      Icons.control_point,
-                      color: Colors.white,
+                Container(
+                  alignment: Alignment.topRight,
+                  padding:
+                      const EdgeInsets.only(bottom: 3, right: 10, left: 10),
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.redAccent),
                     ),
                   ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text((video.bunrui == 0) ? '-----' : video.bunrui),
+                      Icon(
+                        Icons.star,
+                        color: (diffDays >= 0)
+                            ? Colors.yellowAccent.withOpacity(0.7)
+                            : Colors.black.withOpacity(0.3),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(width: 10),
+                    Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            onTap: () {
+                              _addSelectedAry(youtubeId: video.youtubeId);
+                            },
+                            child: const Icon(
+                              Icons.control_point,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: DefaultTextStyle(
+                        style: const TextStyle(fontSize: 12),
+                        child: VideoListItem(
+                          data: Video(
+                            youtubeId: video.youtubeId,
+                            title: video.title,
+                            url: video.url,
+                            channelId: video.channelId,
+                            channelTitle: video.channelTitle,
+                            playtime: video.playtime,
+                            getdate: video.getdate,
+                            pubdate: video.pubdate,
+                            special: video.special,
+                          ),
+                          linkDisplay: false,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: DefaultTextStyle(
-                style: const TextStyle(fontSize: 12),
-                child: VideoListItem(
-                  data: Video(
-                    youtubeId: video.youtubeId,
-                    title: video.title,
-                    url: video.url,
-                    channelId: video.channelId,
-                    channelTitle: video.channelTitle,
-                    playtime: video.playtime,
-                    getdate: video.getdate,
-                    pubdate: video.pubdate,
-                    special: video.special,
-                  ),
-                  linkDisplay: true,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
+      separatorBuilder: (_context, index) => Container(),
+      itemCount: videoRecyclingState.length,
     );
   }
 
   ///
   void _addSelectedAry({required String youtubeId}) {
-    final viewModel = _ref.watch(bunruiListProvider(bunrui).notifier);
+    final viewModel = _ref.watch(recyclingVideoProvider.notifier);
     viewModel.addSelectedAry(youtubeId: youtubeId);
   }
 
   ///
   Color _getSelectedBgColor({required String youtubeId}) {
-    final state = _ref.watch(bunruiListProvider(bunrui));
+    final state = _ref.watch(recyclingVideoProvider);
     if (state.selectedList.contains(youtubeId)) {
       return Colors.greenAccent.withOpacity(0.3);
     } else {
@@ -255,81 +268,23 @@ class BunruiListScreen extends ConsumerWidget {
   }
 
   ///
-  void _uploadSpecialItems() async {
-    final state = _ref.watch(bunruiListProvider(bunrui));
-    final viewModel = _ref.watch(bunruiListProvider(bunrui).notifier);
+  void _uploadRecyclingItems() async {
+    final state = _ref.watch(recyclingVideoProvider);
+    final viewModel = _ref.watch(recyclingVideoProvider.notifier);
 
     if (state.selectedList.isNotEmpty) {
-      var _list = [];
-
-      for (var element in state.selectedList) {
-        var sp = (state.specialList.contains(element)) ? 0 : 1;
-        _list.add("$element|$sp");
-      }
-
-      viewModel.uploadBunruiItems(
-        flag: 'special',
-        bunruiItems: _list,
-        bunrui: bunrui,
-      );
-    }
-  }
-
-  ///
-  void _uploadEraseItems() async {
-    final state = _ref.watch(bunruiListProvider(bunrui));
-    final viewModel = _ref.watch(bunruiListProvider(bunrui).notifier);
-
-    if (state.selectedList.isNotEmpty) {
-      bool _backHomeScreen = false;
-
       var _list = [];
       for (var element in state.selectedList) {
         _list.add("'$element'");
       }
 
-      if (state.youtubeList.length == _list.length) {
-        _backHomeScreen = true;
-      }
-
       viewModel.uploadBunruiItems(
-        flag: 'erase',
+        flag: 'recycling',
         bunruiItems: _list,
-        bunrui: bunrui,
+        bunrui: 'recycling',
       );
 
-      if (_backHomeScreen) {
-        _goHomeScreen();
-      }
-    }
-  }
-
-  ///
-  void _uploadDeleteItems() async {
-    final state = _ref.watch(bunruiListProvider(bunrui));
-    final viewModel = _ref.watch(bunruiListProvider(bunrui).notifier);
-
-    if (state.selectedList.isNotEmpty) {
-      bool _backHomeScreen = false;
-
-      var _list = [];
-      for (var element in state.selectedList) {
-        _list.add("'$element'");
-      }
-
-      if (state.youtubeList.length == _list.length) {
-        _backHomeScreen = true;
-      }
-
-      viewModel.uploadBunruiItems(
-        flag: 'delete',
-        bunruiItems: _list,
-        bunrui: bunrui,
-      );
-
-      if (_backHomeScreen) {
-        _goHomeScreen();
-      }
+      _goHomeScreen();
     }
   }
 
@@ -349,14 +304,40 @@ class BunruiListScreen extends ConsumerWidget {
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-final bunruiListProvider = StateNotifierProvider.autoDispose
-    .family<BunruiListStateNotifier, BunruiListState, String>((ref, bunrui) {
-  return BunruiListStateNotifier()..getVideoData(bunrui: bunrui);
+
+final videoRecyclingProvider =
+    StateNotifierProvider.autoDispose<VideoRcyclingStateNotifier, List<Video>>(
+        (ref) {
+  return VideoRcyclingStateNotifier([])..getRecyclingVideo();
 });
 
+class VideoRcyclingStateNotifier extends StateNotifier<List<Video>> {
+  VideoRcyclingStateNotifier(List<Video> state) : super(state);
+
+  ///
+  void getRecyclingVideo() async {
+    try {
+      String url = "http://toyohide.work/BrainLog/api/getDeletedVideo";
+      Map<String, String> headers = {'content-type': 'application/json'};
+
+      Response response = await post(Uri.parse(url), headers: headers);
+      final youtubeData = youtubeDataFromJson(response.body);
+      state = youtubeData.data;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+}
+
 //////////////////////////////////////////////////////////////////////////
-class BunruiListStateNotifier extends StateNotifier<BunruiListState> {
-  BunruiListStateNotifier()
+
+final recyclingVideoProvider = StateNotifierProvider.autoDispose<
+    RecyclingVideoStateNotifier, BunruiListState>((ref) {
+  return RecyclingVideoStateNotifier();
+});
+
+class RecyclingVideoStateNotifier extends StateNotifier<BunruiListState> {
+  RecyclingVideoStateNotifier()
       : super(
           const BunruiListState(
             youtubeList: [],
@@ -364,34 +345,6 @@ class BunruiListStateNotifier extends StateNotifier<BunruiListState> {
             selectedList: [],
           ),
         );
-
-  ///
-  void getVideoData({required String bunrui}) async {
-    try {
-      String url = "http://toyohide.work/BrainLog/api/getYoutubeList";
-      Map<String, String> headers = {'content-type': 'application/json'};
-      String body = json.encode({"bunrui": bunrui});
-      Response response =
-          await post(Uri.parse(url), headers: headers, body: body);
-      final youtubeData = youtubeDataFromJson(response.body);
-
-      //-----------------------------------//
-      final specialList = <String>[];
-      for (var element in youtubeData.data) {
-        if (element.special == '1') {
-          specialList.add(element.youtubeId);
-        }
-      }
-      //-----------------------------------//
-
-      state = state.copyWith(
-        youtubeList: youtubeData.data,
-        specialList: specialList,
-      );
-    } catch (e) {
-      throw e.toString();
-    }
-  }
 
   ///
   void addSelectedAry({required String youtubeId}) {
@@ -422,7 +375,5 @@ class BunruiListStateNotifier extends StateNotifier<BunruiListState> {
     await post(Uri.parse(url), headers: headers, body: body);
 
     state = state.copyWith(selectedList: []);
-
-    getVideoData(bunrui: bunrui);
   }
 }

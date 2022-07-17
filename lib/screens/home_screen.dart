@@ -4,6 +4,7 @@ import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:youtubeplayer2/screens/video_recycling_screen.dart';
 
 import '../model/bunrui.dart';
 import '../model/youtube_data.dart';
@@ -48,8 +49,12 @@ class HomeScreen extends StatelessWidget {
         fabOpenColor: Colors.redAccent.withOpacity(0.3),
         fabCloseColor: Colors.pinkAccent.withOpacity(0.3),
         ringWidth: 10,
-        ringDiameter: 200,
+        ringDiameter: 250,
         children: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.recycling, color: Colors.purpleAccent),
+            onPressed: () => _goVideoRecyclingScreen(context: context),
+          ),
           IconButton(
             icon: const Icon(Icons.star, color: Colors.white),
             onPressed: () => _goSpecialVideoScreen(context: context),
@@ -88,8 +93,6 @@ class HomeScreen extends StatelessWidget {
             builder: (BuildContext context, WidgetRef ref, Widget? child) {
               final videoBunrui = ref.watch(videoBunruiProvider);
 
-              final videoList = ref.watch(videoSearchProvider);
-
               return Column(
                 children: [
                   Expanded(
@@ -98,27 +101,26 @@ class HomeScreen extends StatelessWidget {
                       videoBunrui: videoBunrui,
                     ),
                   ),
-                  if (videoList.isNotEmpty)
-                    Column(
-                      children: [
-                        const Divider(
-                          color: Colors.redAccent,
-                          thickness: 3,
-                        ),
-                        Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.all(10),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.redAccent.withOpacity(0.3),
-                            ),
-                            onPressed: () => _goBunruiSettingScreen(
-                                context: context, bunrui: 'undefined'),
-                            child: const Text('分類する'),
+                  Column(
+                    children: [
+                      const Divider(
+                        color: Colors.redAccent,
+                        thickness: 3,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.all(10),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.redAccent.withOpacity(0.3),
                           ),
+                          onPressed: () => _goBunruiSettingScreen(
+                              context: context, bunrui: 'undefined'),
+                          child: const Text('分類する'),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                 ],
               );
             },
@@ -268,6 +270,16 @@ class HomeScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) => RemoveVideoSelectScreen(),
+      ),
+    );
+  }
+
+  ///
+  void _goVideoRecyclingScreen({required BuildContext context}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VideoRecyclingScreen(),
       ),
     );
   }

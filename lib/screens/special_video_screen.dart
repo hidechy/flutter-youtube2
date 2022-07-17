@@ -115,6 +115,7 @@ class SpecialVideoScreen extends StatelessWidget {
                   pubdate: data[exValue[0]]![j].pubdate,
                   special: data[exValue[0]]![j].special,
                 ),
+                linkDisplay: true,
               ),
             ),
           );

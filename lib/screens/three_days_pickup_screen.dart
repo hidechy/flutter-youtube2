@@ -161,6 +161,7 @@ class ThreeDaysPickupScreen extends StatelessWidget {
                   pubdate: video.pubdate,
                   special: video.special,
                 ),
+                linkDisplay: true,
               ),
             ],
           ),

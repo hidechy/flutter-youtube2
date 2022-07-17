@@ -315,6 +315,7 @@ class SearchScreen extends StatelessWidget {
                   pubdate: video.pubdate,
                   special: video.special,
                 ),
+                linkDisplay: true,
               ),
             ],
           ),

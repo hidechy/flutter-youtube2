@@ -170,7 +170,15 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
                   children: [
                     Expanded(child: Container()),
                     const SizedBox(width: 10),
-                    Expanded(child: Container()),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.redAccent.withOpacity(0.3),
+                        ),
+                        onPressed: () => _uploadEraseItems(),
+                        child: const Text('分類消去'),
+                      ),
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: ElevatedButton(
@@ -189,6 +197,27 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  ///
+  void _uploadEraseItems() async {
+    final state = _ref.watch(removeVideoProvider);
+    final viewModel = _ref.watch(removeVideoProvider.notifier);
+
+    if (state.selectedList.isNotEmpty) {
+      var _list = [];
+      for (var element in state.selectedList) {
+        _list.add("'$element'");
+      }
+
+      viewModel.uploadBunruiItems(
+        flag: 'erase',
+        bunruiItems: _list,
+        bunrui: 'erase',
+      );
+
+      _goHomeScreen();
+    }
   }
 
   ///
@@ -216,33 +245,18 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
   Widget _getVideoList() {
     List<Video> videoList = _getYearVideoList();
 
-    //
-    //
-
     final DateTime threeDaysAgo =
         DateTime.now().add(const Duration(days: 3) * -1);
-
-    //
-    //
 
     return ListView.separated(
       itemBuilder: (_context, index) {
         var video = videoList[index];
 
-//
-        //
-
         int diffDays =
             DateTime.parse(video.getdate).difference(threeDaysAgo).inDays;
 
-//
-        //
-
         return Card(
-          color: _getSelectedBgColor(
-            bunrui: video.bunrui,
-            youtubeId: video.youtubeId,
-          ),
+          color: _getSelectedBgColor(youtubeId: video.youtubeId),
           child: ListTile(
             contentPadding: const EdgeInsets.all(0),
             title: Column(
@@ -259,7 +273,7 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(video.bunrui),
+                      Text((video.bunrui == 0) ? '-----' : video.bunrui),
                       Icon(
                         Icons.star,
                         color: (diffDays >= 0)
@@ -280,10 +294,7 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
                           cursor: SystemMouseCursors.click,
                           child: GestureDetector(
                             onTap: () {
-                              _addSelectedAry(
-                                bunrui: video.bunrui,
-                                youtubeId: video.youtubeId,
-                              );
+                              _addSelectedAry(youtubeId: video.youtubeId);
                             },
                             child: const Icon(
                               Icons.control_point,
@@ -309,6 +320,7 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
                             pubdate: video.pubdate,
                             special: video.special,
                           ),
+                          linkDisplay: true,
                         ),
                       ),
                     ),
@@ -351,14 +363,13 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
   }
 
   ///
-  void _addSelectedAry({required String bunrui, required String youtubeId}) {
+  void _addSelectedAry({required String youtubeId}) {
     final viewModel = _ref.watch(removeVideoProvider.notifier);
     viewModel.addSelectedAry(youtubeId: youtubeId);
   }
 
   ///
-  Color _getSelectedBgColor(
-      {required String bunrui, required String youtubeId}) {
+  Color _getSelectedBgColor({required String youtubeId}) {
     final state = _ref.watch(removeVideoProvider);
     if (state.selectedList.contains(youtubeId)) {
       return Colors.greenAccent.withOpacity(0.3);
