@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 
-import 'video_history_screen.dart';
-
 import '../model/bunrui.dart';
 import '../model/youtube_data.dart';
 import '../model/video.dart';
@@ -17,6 +15,8 @@ import 'search_screen.dart';
 import 'bunrui_setting_screen.dart';
 import 'bunrui_list_screen.dart';
 import 'special_video_screen.dart';
+
+import 'remove_video_select_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -56,7 +56,7 @@ class HomeScreen extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.arrow_downward, color: Colors.white),
-            onPressed: () => _goVideoHistoryScreen(context: context),
+            onPressed: () => _goRemoveVideoSelectScreen(context: context),
           ),
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white),
@@ -157,7 +157,7 @@ class HomeScreen extends StatelessWidget {
                 right: -50,
                 top: -40,
                 child: Container(
-                  padding: EdgeInsets.all(30),
+                  padding: const EdgeInsets.all(30),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
@@ -173,7 +173,7 @@ class HomeScreen extends StatelessWidget {
                 left: -50,
                 bottom: -40,
                 child: Container(
-                  padding: EdgeInsets.all(30),
+                  padding: const EdgeInsets.all(30),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
@@ -188,15 +188,15 @@ class HomeScreen extends StatelessWidget {
               //--------------------
 
               Container(
-                padding: EdgeInsets.only(top: 20, left: 50, bottom: 20),
-                margin: EdgeInsets.all(3),
+                padding: const EdgeInsets.only(top: 20, left: 50, bottom: 20),
+                margin: const EdgeInsets.all(3),
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.3),
                 ),
                 width: double.infinity,
                 child: Text(
                   exElement[0],
-                  style: TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 18),
                 ),
               ),
             ],
@@ -263,11 +263,11 @@ class HomeScreen extends StatelessWidget {
   }
 
   ///
-  void _goVideoHistoryScreen({required BuildContext context}) {
+  void _goRemoveVideoSelectScreen({required BuildContext context}) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => VideoHistoryScreen(),
+        builder: (_) => RemoveVideoSelectScreen(),
       ),
     );
   }

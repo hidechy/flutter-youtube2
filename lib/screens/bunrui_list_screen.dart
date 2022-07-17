@@ -78,7 +78,7 @@ class BunruiListScreen extends ConsumerWidget {
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: Colors.redAccent.withOpacity(0.5),
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(10),
                           bottomRight: Radius.circular(10),
                         ),
@@ -98,7 +98,7 @@ class BunruiListScreen extends ConsumerWidget {
                             children: List.generate(
                               (constraints.constrainWidth() / 30).floor(),
                               (index) {
-                                return SizedBox(
+                                return const SizedBox(
                                   width: 5,
                                   height: 3,
                                   child: DecoratedBox(
@@ -348,14 +348,12 @@ class BunruiListScreen extends ConsumerWidget {
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-
 final bunruiListProvider = StateNotifierProvider.autoDispose
     .family<BunruiListStateNotifier, BunruiListState, String>((ref, bunrui) {
   return BunruiListStateNotifier()..getVideoData(bunrui: bunrui);
 });
 
 //////////////////////////////////////////////////////////////////////////
-
 class BunruiListStateNotifier extends StateNotifier<BunruiListState> {
   BunruiListStateNotifier()
       : super(

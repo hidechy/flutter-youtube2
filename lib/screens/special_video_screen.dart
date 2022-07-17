@@ -102,7 +102,7 @@ class SpecialVideoScreen extends StatelessWidget {
           _list.add(
             Container(
               decoration: BoxDecoration(color: Colors.black.withOpacity(0.3)),
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               child: VideoListItem(
                 data: Video(
                   youtubeId: data[exValue[0]]![j].youtubeId,

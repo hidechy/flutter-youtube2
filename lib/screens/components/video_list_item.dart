@@ -20,7 +20,7 @@ class VideoListItem extends StatelessWidget {
           right: -60,
           top: -60,
           child: Container(
-            padding: EdgeInsets.all(60),
+            padding: const EdgeInsets.all(60),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -35,7 +35,7 @@ class VideoListItem extends StatelessWidget {
           left: -80,
           bottom: -80,
           child: Container(
-            padding: EdgeInsets.all(60),
+            padding: const EdgeInsets.all(60),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -47,7 +47,7 @@ class VideoListItem extends StatelessWidget {
           ),
         ),
         Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -81,7 +81,7 @@ class VideoListItem extends StatelessWidget {
                         cursor: SystemMouseCursors.click,
                         child: GestureDetector(
                           onTap: () => _openBrowser(youtubeId: data.youtubeId),
-                          child: Icon(Icons.link),
+                          child: const Icon(Icons.link),
                         ),
                       ),
                     ),
