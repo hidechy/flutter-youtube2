@@ -93,6 +93,8 @@ class HomeScreen extends StatelessWidget {
             builder: (BuildContext context, WidgetRef ref, Widget? child) {
               final videoBunrui = ref.watch(videoBunruiProvider);
 
+              final videoList = ref.watch(videoSearchProvider);
+
               return Column(
                 children: [
                   Expanded(
@@ -103,10 +105,73 @@ class HomeScreen extends StatelessWidget {
                   ),
                   Column(
                     children: [
-                      const Divider(
-                        color: Colors.redAccent,
-                        thickness: 3,
+                      //-----------------------------//
+                      // 左右の半円と点線を引く方法
+
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: 20,
+                            width: 10,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.redAccent.withOpacity(0.5),
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: LayoutBuilder(
+                                builder: (BuildContext context,
+                                    BoxConstraints constraints) {
+                                  return Flex(
+                                    direction: Axis.horizontal,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: List.generate(
+                                      (constraints.constrainWidth() / 30)
+                                          .floor(),
+                                      (index) {
+                                        return const SizedBox(
+                                          width: 5,
+                                          height: 3,
+                                          child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              color: Colors.redAccent,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                            width: 10,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.redAccent.withOpacity(0.5),
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  bottomLeft: Radius.circular(10),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
+
+                      //-----------------------------//
+
                       Container(
                         width: double.infinity,
                         margin: const EdgeInsets.all(10),
@@ -116,7 +181,38 @@ class HomeScreen extends StatelessWidget {
                           ),
                           onPressed: () => _goBunruiSettingScreen(
                               context: context, bunrui: 'undefined'),
-                          child: const Text('分類する'),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Center(
+                                  child: Row(
+                                    children: [
+                                      const Text('分類する'),
+                                      const SizedBox(width: 20),
+                                      Container(
+                                        width: 30,
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Text(
+                                          videoList.length.toString(),
+                                          style: const TextStyle(
+                                            color: Colors.redAccent,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
