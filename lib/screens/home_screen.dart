@@ -4,7 +4,6 @@ import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
-import 'package:youtubeplayer2/screens/video_recycling_screen.dart';
 
 import '../model/bunrui.dart';
 import '../model/youtube_data.dart';
@@ -12,12 +11,14 @@ import '../model/video.dart';
 
 import '../utilities/utility.dart';
 
+import 'calendar_get_screen.dart';
 import 'search_screen.dart';
 import 'bunrui_setting_screen.dart';
 import 'bunrui_list_screen.dart';
 import 'special_video_screen.dart';
-
 import 'remove_video_select_screen.dart';
+import 'video_recycling_screen.dart';
+import 'calendar_publish_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -39,7 +40,32 @@ class HomeScreen extends StatelessWidget {
         ),
         //-------------------------//これを消すと「←」が出てくる（消さない）
 
-        actions: const <Widget>[],
+        actions: <Widget>[
+          GestureDetector(
+            onTap: () => _goCalendarGetScreen(context: context),
+            child: SizedBox(
+              width: 60,
+              child: Column(
+                children: const [
+                  Icon(Icons.calendar_today_sharp),
+                  Text('Get'),
+                ],
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () => _goCalendarPublishScreen(context: context),
+            child: SizedBox(
+              width: 60,
+              child: Column(
+                children: const [
+                  Icon(Icons.calendar_today_sharp),
+                  Text('Publish'),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
 
       //
@@ -376,6 +402,26 @@ class HomeScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) => VideoRecyclingScreen(),
+      ),
+    );
+  }
+
+  ///
+  void _goCalendarPublishScreen({required BuildContext context}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CalendarPublishScreen(),
+      ),
+    );
+  }
+
+  ///
+  void _goCalendarGetScreen({required BuildContext context}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CalendarGetScreen(),
       ),
     );
   }
