@@ -14,7 +14,6 @@ import '../model/video.dart';
 
 import '../view_model/youtube_list_view_model.dart';
 import 'components/video_list_item.dart';
-import 'home_screen.dart';
 
 class RemoveVideoSelectScreen extends ConsumerWidget {
   RemoveVideoSelectScreen({Key? key}) : super(key: key);
@@ -22,7 +21,6 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
   final Utility _utility = Utility();
 
   late WidgetRef _ref;
-
   late BuildContext _context;
 
   ///
@@ -216,7 +214,7 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
         bunrui: 'erase',
       );
 
-      _goHomeScreen();
+      Navigator.pop(_context);
     }
   }
 
@@ -237,7 +235,7 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
         bunrui: 'delete',
       );
 
-      _goHomeScreen();
+      Navigator.pop(_context);
     }
   }
 
@@ -376,16 +374,6 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
     } else {
       return Colors.black.withOpacity(0.1);
     }
-  }
-
-  ///
-  void _goHomeScreen() {
-    Navigator.pushReplacement(
-      _context,
-      MaterialPageRoute(
-        builder: (_) => HomeScreen(),
-      ),
-    );
   }
 }
 

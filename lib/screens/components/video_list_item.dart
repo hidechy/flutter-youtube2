@@ -53,45 +53,52 @@ class VideoListItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: FadeInImage.assetNetwork(
-                      placeholder: 'assets/images/no_image.png',
-                      image:
-                          'https://img.youtube.com/vi/${data.youtubeId}/mqdefault.jpg',
+              SingleChildScrollView(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 180,
+                      child: FadeInImage.assetNetwork(
+                        placeholder: 'assets/images/no_image.png',
+                        image:
+                            'https://img.youtube.com/vi/${data.youtubeId}/mqdefault.jpg',
+                      ),
                     ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: (data.special == '1')
-                        ? const Icon(
-                            Icons.star,
-                            color: Colors.greenAccent,
-                          )
-                        : Icon(
-                            Icons.check_box_outline_blank,
-                            color: Colors.black.withOpacity(0.2),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: (data.special == '1')
+                                ? const Icon(
+                                    Icons.star,
+                                    color: Colors.greenAccent,
+                                  )
+                                : Icon(
+                                    Icons.check_box_outline_blank,
+                                    color: Colors.black.withOpacity(0.2),
+                                  ),
                           ),
-                  ),
-                  Expanded(
-                    child: (linkDisplay)
-                        ? Container(
-                            alignment: Alignment.topRight,
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                onTap: () =>
-                                    _openBrowser(youtubeId: data.youtubeId),
-                                child: const Icon(Icons.link),
-                              ),
-                            ),
-                          )
-                        : Container(),
-                  ),
-                ],
+                          (linkDisplay)
+                              ? Container(
+                                  alignment: Alignment.topRight,
+                                  child: MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      onTap: () => _openBrowser(
+                                          youtubeId: data.youtubeId),
+                                      child: const Icon(Icons.link),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 10),
               Text(data.title),

@@ -13,8 +13,6 @@ import '../model/youtube_data.dart';
 
 import '../utilities/utility.dart';
 
-import 'home_screen.dart';
-
 import 'components/video_list_item.dart';
 
 class BunruiListScreen extends ConsumerWidget {
@@ -25,13 +23,11 @@ class BunruiListScreen extends ConsumerWidget {
   final Utility _utility = Utility();
 
   late WidgetRef _ref;
-
   late BuildContext _context;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     _ref = ref;
-
     _context = context;
 
     final state = ref.watch(bunruiListProvider(bunrui));
@@ -52,7 +48,9 @@ class BunruiListScreen extends ConsumerWidget {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => _goHomeScreen(),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
@@ -299,7 +297,7 @@ class BunruiListScreen extends ConsumerWidget {
       );
 
       if (_backHomeScreen) {
-        _goHomeScreen();
+        Navigator.pop(_context);
       }
     }
   }
@@ -328,19 +326,9 @@ class BunruiListScreen extends ConsumerWidget {
       );
 
       if (_backHomeScreen) {
-        _goHomeScreen();
+        Navigator.pop(_context);
       }
     }
-  }
-
-  ///
-  void _goHomeScreen() {
-    Navigator.pushReplacement(
-      _context,
-      MaterialPageRoute(
-        builder: (_) => HomeScreen(),
-      ),
-    );
   }
 }
 

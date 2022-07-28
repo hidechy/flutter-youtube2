@@ -25,8 +25,12 @@ class HomeScreen extends StatelessWidget {
 
   final Utility _utility = Utility();
 
+  late BuildContext _context;
+
   @override
   Widget build(BuildContext context) {
+    _context = context;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Video Category'),
@@ -41,28 +45,39 @@ class HomeScreen extends StatelessWidget {
         //-------------------------//これを消すと「←」が出てくる（消さない）
 
         actions: <Widget>[
-          GestureDetector(
-            onTap: () => _goCalendarGetScreen(context: context),
-            child: SizedBox(
-              width: 60,
-              child: Column(
-                children: const [
-                  Icon(Icons.calendar_today_sharp),
-                  Text('Get'),
-                ],
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () => _goCalendarPublishScreen(context: context),
-            child: SizedBox(
-              width: 60,
-              child: Column(
-                children: const [
-                  Icon(Icons.calendar_today_sharp),
-                  Text('Publish'),
-                ],
-              ),
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    _goCalendarGetScreen();
+                  },
+                  child: SizedBox(
+                    width: 60,
+                    child: Column(
+                      children: const [
+                        Icon(Icons.calendar_today_sharp),
+                        Text('Get'),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    _goCalendarPublishScreen();
+                  },
+                  child: SizedBox(
+                    width: 60,
+                    child: Column(
+                      children: const [
+                        Icon(Icons.calendar_today_sharp),
+                        Text('Publish'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -79,19 +94,27 @@ class HomeScreen extends StatelessWidget {
         children: <Widget>[
           IconButton(
             icon: const Icon(Icons.recycling, color: Colors.purpleAccent),
-            onPressed: () => _goVideoRecyclingScreen(context: context),
+            onPressed: () {
+              _goVideoRecyclingScreen();
+            },
           ),
           IconButton(
             icon: const Icon(Icons.star, color: Colors.white),
-            onPressed: () => _goSpecialVideoScreen(context: context),
+            onPressed: () {
+              _goSpecialVideoScreen();
+            },
           ),
           IconButton(
             icon: const Icon(Icons.arrow_downward, color: Colors.white),
-            onPressed: () => _goRemoveVideoSelectScreen(context: context),
+            onPressed: () {
+              _goRemoveVideoSelectScreen();
+            },
           ),
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white),
-            onPressed: () => _goSearchScreen(context: context),
+            onPressed: () {
+              _goSearchScreen();
+            },
           ),
           Consumer(
             builder: (BuildContext context, WidgetRef ref, Widget? child) {
@@ -101,7 +124,7 @@ class HomeScreen extends StatelessWidget {
               return IconButton(
                 icon: const Icon(Icons.refresh, color: Colors.yellowAccent),
                 onPressed: () {
-                  videoBunruiViewModel.getVideoBunrui();
+                  _goHomeScreen();
                 },
               );
             },
@@ -124,10 +147,7 @@ class HomeScreen extends StatelessWidget {
               return Column(
                 children: [
                   Expanded(
-                    child: _bunruiButtonList(
-                      context: context,
-                      videoBunrui: videoBunrui,
-                    ),
+                    child: _bunruiButtonList(videoBunrui: videoBunrui),
                   ),
                   Column(
                     children: [
@@ -205,8 +225,9 @@ class HomeScreen extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             primary: Colors.redAccent.withOpacity(0.3),
                           ),
-                          onPressed: () => _goBunruiSettingScreen(
-                              context: context, bunrui: 'undefined'),
+                          onPressed: () {
+                            _goBunruiSettingScreen(bunrui: 'undefined');
+                          },
                           child: Row(
                             children: [
                               Expanded(
@@ -253,10 +274,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   ///
-  Widget _bunruiButtonList({
-    required List<String> videoBunrui,
-    required BuildContext context,
-  }) {
+  Widget _bunruiButtonList({required List<String> videoBunrui}) {
     if (videoBunrui.isEmpty) {
       return Container();
     }
@@ -268,10 +286,9 @@ class HomeScreen extends StatelessWidget {
 
       _list.add(
         InkWell(
-          onTap: () => _goBunruiListScreen(
-            context: context,
-            bunrui: element,
-          ),
+          onTap: () {
+            _goBunruiListScreen(bunrui: element);
+          },
           child: Stack(
             children: [
               //--------------------
@@ -339,89 +356,111 @@ class HomeScreen extends StatelessWidget {
 
   /////////////////////////////////////
   ///
-  void _goBunruiSettingScreen({
-    required String bunrui,
-    required BuildContext context,
-  }) {
-    Navigator.pushReplacement(
-      context,
+  void _goBunruiSettingScreen({required String bunrui}) {
+    Navigator.push(
+      _context,
       MaterialPageRoute(
-        builder: (_) => BunruiSettingScreen(bunrui: bunrui),
+        builder: (_) {
+          return BunruiSettingScreen(bunrui: bunrui);
+        },
       ),
     );
   }
 
   ///
-  void _goBunruiListScreen({
-    required String bunrui,
-    required BuildContext context,
-  }) {
+  void _goBunruiListScreen({required String bunrui}) {
     var exBunrui = (bunrui).split('|');
 
+    Navigator.push(
+      _context,
+      MaterialPageRoute(
+        builder: (_) {
+          return BunruiListScreen(bunrui: exBunrui[0]);
+        },
+      ),
+    );
+  }
+
+  ///
+  void _goSearchScreen() {
+    Navigator.push(
+      _context,
+      MaterialPageRoute(
+        builder: (_) {
+          return SearchScreen();
+        },
+      ),
+    );
+  }
+
+  ///
+  void _goSpecialVideoScreen() {
+    Navigator.push(
+      _context,
+      MaterialPageRoute(
+        builder: (_) {
+          return SpecialVideoScreen();
+        },
+      ),
+    );
+  }
+
+  ///
+  void _goRemoveVideoSelectScreen() {
+    Navigator.push(
+      _context,
+      MaterialPageRoute(
+        builder: (_) {
+          return RemoveVideoSelectScreen();
+        },
+      ),
+    );
+  }
+
+  ///
+  void _goVideoRecyclingScreen() {
+    Navigator.push(
+      _context,
+      MaterialPageRoute(
+        builder: (_) {
+          return VideoRecyclingScreen();
+        },
+      ),
+    );
+  }
+
+  ///
+  void _goCalendarPublishScreen() {
+    Navigator.push(
+      _context,
+      MaterialPageRoute(
+        builder: (_) {
+          return CalendarPublishScreen();
+        },
+      ),
+    );
+  }
+
+  ///
+  void _goCalendarGetScreen() {
+    Navigator.push(
+      _context,
+      MaterialPageRoute(
+        builder: (_) {
+          return CalendarGetScreen();
+        },
+      ),
+    );
+  }
+
+  ///
+  void _goHomeScreen() {
     Navigator.pushReplacement(
-      context,
+      _context,
       MaterialPageRoute(
-        builder: (_) => BunruiListScreen(bunrui: exBunrui[0]),
-      ),
-    );
-  }
-
-  ///
-  void _goSearchScreen({required BuildContext context}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SearchScreen(),
-      ),
-    );
-  }
-
-  ///
-  void _goSpecialVideoScreen({required BuildContext context}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SpecialVideoScreen(),
-      ),
-    );
-  }
-
-  ///
-  void _goRemoveVideoSelectScreen({required BuildContext context}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => RemoveVideoSelectScreen(),
-      ),
-    );
-  }
-
-  ///
-  void _goVideoRecyclingScreen({required BuildContext context}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => VideoRecyclingScreen(),
-      ),
-    );
-  }
-
-  ///
-  void _goCalendarPublishScreen({required BuildContext context}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => CalendarPublishScreen(),
-      ),
-    );
-  }
-
-  ///
-  void _goCalendarGetScreen({required BuildContext context}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => CalendarGetScreen(),
+        builder: (_context) {
+          return HomeScreen();
+        },
       ),
     );
   }

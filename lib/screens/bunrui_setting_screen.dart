@@ -14,8 +14,6 @@ import '../logic/logic.dart';
 
 import '../utilities/utility.dart';
 
-import 'home_screen.dart';
-
 class BunruiSettingScreen extends StatefulWidget {
   const BunruiSettingScreen({Key? key, required this.bunrui}) : super(key: key);
 
@@ -145,7 +143,9 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => _goHomeScreen(),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
@@ -293,7 +293,7 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
 
     await Future.delayed(const Duration(seconds: 3));
 
-    _goHomeScreen();
+    Navigator.pop(context);
   }
 
   ///
@@ -342,17 +342,6 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
           bunruiText: bunruiText,
         );
       },
-    );
-  }
-
-  /////////////////////////////////////////////////////
-  ///
-  void _goHomeScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => HomeScreen(),
-      ),
     );
   }
 }

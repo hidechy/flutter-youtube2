@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../model/video.dart';
 import 'video_list_item.dart';
@@ -36,52 +37,68 @@ class CalendarDisplayItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: thisDateData.map(
               (value) {
-                return Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.redAccent.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 3),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 2),
-                                alignment: Alignment.center,
-                                child: Row(
-                                  children: [
-                                    Expanded(child: Container()),
-                                    Expanded(
-                                      flex: 5,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        child: Text(value.bunrui),
+                return DefaultTextStyle(
+                  style: const TextStyle(fontSize: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //
+
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 2),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    children: [
+                                      Expanded(child: Container()),
+                                      Expanded(
+                                        flex: 5,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Text(value.bunrui),
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(child: Container()),
-                                  ],
+                                      Expanded(child: Container()),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    VideoListItem(
-                      data: value,
-                      linkDisplay: true,
-                    ),
-                    Divider(
-                      thickness: 2,
-                      color: Colors.redAccent.withOpacity(0.3),
-                    ),
-                  ],
+
+                      //
+
+                      VideoListItem(
+                        data: value,
+                        linkDisplay: false,
+                      ),
+
+                      //
+
+                      GestureDetector(
+                        onTap: () {
+                          _openBrowser(youtubeId: value.youtubeId);
+                        },
+                        child: Icon(Icons.link),
+                      ),
+
+                      const Divider(color: Colors.white),
+                    ],
+                  ),
                 );
               },
             ).toList(),
@@ -89,5 +106,14 @@ class CalendarDisplayItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  ///
+  void _openBrowser({required String youtubeId}) async {
+    var url = 'https://youtu.be/$youtubeId';
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {}
   }
 }

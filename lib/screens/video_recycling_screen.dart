@@ -14,8 +14,6 @@ import 'components/video_list_item.dart';
 
 import 'dart:convert';
 
-import 'home_screen.dart';
-
 class VideoRecyclingScreen extends ConsumerWidget {
   VideoRecyclingScreen({Key? key}) : super(key: key);
 
@@ -284,18 +282,8 @@ class VideoRecyclingScreen extends ConsumerWidget {
         bunrui: 'recycling',
       );
 
-      _goHomeScreen();
+      Navigator.pop(_context);
     }
-  }
-
-  ///
-  void _goHomeScreen() {
-    Navigator.pushReplacement(
-      _context,
-      MaterialPageRoute(
-        builder: (_) => HomeScreen(),
-      ),
-    );
   }
 }
 
