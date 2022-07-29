@@ -84,7 +84,7 @@ class CalendarGetScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: CalendarCarousel<Event>(
-                  minSelectedDate: DateTime(2020, 1, 1),
+                  minSelectedDate: DateTime(2022, 1, 1),
                   markedDatesMap: _markedDateMap,
                   locale: 'JA',
                   todayBorderColor: Colors.orangeAccent.withOpacity(0.8),

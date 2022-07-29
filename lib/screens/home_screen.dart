@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:convert';
 
 import 'package:fab_circular_menu/fab_circular_menu.dart';
@@ -11,14 +13,8 @@ import '../model/video.dart';
 
 import '../utilities/utility.dart';
 
-import 'calendar_get_screen.dart';
-import 'search_screen.dart';
 import 'bunrui_setting_screen.dart';
 import 'bunrui_list_screen.dart';
-import 'special_video_screen.dart';
-import 'remove_video_select_screen.dart';
-import 'video_recycling_screen.dart';
-import 'calendar_publish_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -51,7 +47,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    _goCalendarGetScreen();
+                    Navigator.pushNamed(context, '/calendar_get');
                   },
                   child: SizedBox(
                     width: 60,
@@ -65,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    _goCalendarPublishScreen();
+                    Navigator.pushNamed(context, '/calendar_publish');
                   },
                   child: SizedBox(
                     width: 60,
@@ -95,36 +91,33 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.recycling, color: Colors.purpleAccent),
             onPressed: () {
-              _goVideoRecyclingScreen();
+              Navigator.pushNamed(context, '/recycle');
             },
           ),
           IconButton(
             icon: const Icon(Icons.star, color: Colors.white),
             onPressed: () {
-              _goSpecialVideoScreen();
+              Navigator.pushNamed(context, '/special');
             },
           ),
           IconButton(
             icon: const Icon(Icons.arrow_downward, color: Colors.white),
             onPressed: () {
-              _goRemoveVideoSelectScreen();
+              Navigator.pushNamed(context, '/remove');
             },
           ),
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white),
             onPressed: () {
-              _goSearchScreen();
+              Navigator.pushNamed(context, '/search');
             },
           ),
           Consumer(
             builder: (BuildContext context, WidgetRef ref, Widget? child) {
-              final videoBunruiViewModel =
-                  ref.watch(videoBunruiProvider.notifier);
-
               return IconButton(
                 icon: const Icon(Icons.refresh, color: Colors.yellowAccent),
                 onPressed: () {
-                  _goHomeScreen();
+                  Navigator.pushNamed(context, '/');
                 },
               );
             },
@@ -376,90 +369,6 @@ class HomeScreen extends StatelessWidget {
       MaterialPageRoute(
         builder: (_) {
           return BunruiListScreen(bunrui: exBunrui[0]);
-        },
-      ),
-    );
-  }
-
-  ///
-  void _goSearchScreen() {
-    Navigator.push(
-      _context,
-      MaterialPageRoute(
-        builder: (_) {
-          return SearchScreen();
-        },
-      ),
-    );
-  }
-
-  ///
-  void _goSpecialVideoScreen() {
-    Navigator.push(
-      _context,
-      MaterialPageRoute(
-        builder: (_) {
-          return SpecialVideoScreen();
-        },
-      ),
-    );
-  }
-
-  ///
-  void _goRemoveVideoSelectScreen() {
-    Navigator.push(
-      _context,
-      MaterialPageRoute(
-        builder: (_) {
-          return RemoveVideoSelectScreen();
-        },
-      ),
-    );
-  }
-
-  ///
-  void _goVideoRecyclingScreen() {
-    Navigator.push(
-      _context,
-      MaterialPageRoute(
-        builder: (_) {
-          return VideoRecyclingScreen();
-        },
-      ),
-    );
-  }
-
-  ///
-  void _goCalendarPublishScreen() {
-    Navigator.push(
-      _context,
-      MaterialPageRoute(
-        builder: (_) {
-          return CalendarPublishScreen();
-        },
-      ),
-    );
-  }
-
-  ///
-  void _goCalendarGetScreen() {
-    Navigator.push(
-      _context,
-      MaterialPageRoute(
-        builder: (_) {
-          return CalendarGetScreen();
-        },
-      ),
-    );
-  }
-
-  ///
-  void _goHomeScreen() {
-    Navigator.pushReplacement(
-      _context,
-      MaterialPageRoute(
-        builder: (_context) {
-          return HomeScreen();
         },
       ),
     );

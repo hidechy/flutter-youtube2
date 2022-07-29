@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../model/video.dart';
+
 import 'video_list_item.dart';
 
-class CalendarDisplayItem extends StatelessWidget {
+class CalendarDisplayItem extends ConsumerWidget {
   const CalendarDisplayItem(
       {super.key,
       required this.thisDateData,
@@ -17,7 +19,7 @@ class CalendarDisplayItem extends StatelessWidget {
 
   ///
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
       backgroundColor: Colors.transparent,
       title: Container(
@@ -93,7 +95,7 @@ class CalendarDisplayItem extends StatelessWidget {
                         onTap: () {
                           _openBrowser(youtubeId: value.youtubeId);
                         },
-                        child: Icon(Icons.link),
+                        child: const Icon(Icons.link),
                       ),
 
                       const Divider(color: Colors.white),
