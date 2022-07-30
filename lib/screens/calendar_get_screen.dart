@@ -9,7 +9,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../model/video.dart';
 import '../utilities/utility.dart';
 import '../view_model/youtube_list_view_model.dart';
+
 import 'components/calendar_display_item.dart';
+
+import 'components/functions.dart';
 
 class CalendarGetScreen extends ConsumerWidget {
   CalendarGetScreen({Key? key}) : super(key: key);
@@ -70,7 +73,7 @@ class CalendarGetScreen extends ConsumerWidget {
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              backHomeScreen(context: context);
             },
             icon: const Icon(Icons.close),
           ),

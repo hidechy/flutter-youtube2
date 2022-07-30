@@ -13,7 +13,10 @@ import '../utilities/utility.dart';
 import '../model/video.dart';
 
 import '../view_model/youtube_list_view_model.dart';
+
 import 'components/video_list_item.dart';
+
+import 'components/functions.dart';
 
 class RemoveVideoSelectScreen extends ConsumerWidget {
   RemoveVideoSelectScreen({Key? key}) : super(key: key);
@@ -56,7 +59,9 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              backHomeScreen(context: context);
+            },
           ),
         ],
       ),
@@ -214,7 +219,7 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
         bunrui: 'erase',
       );
 
-      Navigator.pop(_context);
+      backHomeScreen(context: _context);
     }
   }
 
@@ -235,7 +240,7 @@ class RemoveVideoSelectScreen extends ConsumerWidget {
         bunrui: 'delete',
       );
 
-      Navigator.pop(_context);
+      backHomeScreen(context: _context);
     }
   }
 

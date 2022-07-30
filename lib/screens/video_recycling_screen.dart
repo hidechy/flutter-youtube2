@@ -1,18 +1,21 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../data/bunrui_list_state.dart';
-import '../model/video.dart';
-
 import 'package:http/http.dart';
 
+import '../data/bunrui_list_state.dart';
+
+import '../model/video.dart';
 import '../model/youtube_data.dart';
+
 import '../utilities/utility.dart';
+
 import 'components/video_list_item.dart';
 
-import 'dart:convert';
+import 'components/functions.dart';
 
 class VideoRecyclingScreen extends ConsumerWidget {
   VideoRecyclingScreen({Key? key}) : super(key: key);
@@ -46,7 +49,9 @@ class VideoRecyclingScreen extends ConsumerWidget {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              backHomeScreen(context: context);
+            },
           ),
         ],
       ),
@@ -282,7 +287,7 @@ class VideoRecyclingScreen extends ConsumerWidget {
         bunrui: 'recycling',
       );
 
-      Navigator.pop(_context);
+      backHomeScreen(context: _context);
     }
   }
 }

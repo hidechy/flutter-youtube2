@@ -11,6 +11,8 @@ import '../view_model/bunrui_list_view_model.dart';
 
 import 'components/video_list_item.dart';
 
+import 'components/functions.dart';
+
 class BunruiListScreen extends ConsumerWidget {
   BunruiListScreen({Key? key, required this.bunrui}) : super(key: key);
 
@@ -45,7 +47,7 @@ class BunruiListScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
-              Navigator.pop(context);
+              backHomeScreen(context: context);
             },
           ),
         ],
@@ -293,7 +295,7 @@ class BunruiListScreen extends ConsumerWidget {
       );
 
       if (_backHomeScreen) {
-        Navigator.pop(_context);
+        backHomeScreen(context: _context);
       }
     }
   }
@@ -322,7 +324,7 @@ class BunruiListScreen extends ConsumerWidget {
       );
 
       if (_backHomeScreen) {
-        Navigator.pop(_context);
+        backHomeScreen(context: _context);
       }
     }
   }

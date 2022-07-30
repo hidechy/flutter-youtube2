@@ -13,6 +13,7 @@ import '../model/video.dart';
 import '../logic/logic.dart';
 
 import '../utilities/utility.dart';
+import 'components/functions.dart';
 
 class BunruiSettingScreen extends StatefulWidget {
   const BunruiSettingScreen({Key? key, required this.bunrui}) : super(key: key);
@@ -41,6 +42,8 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
   final List<String> _bunruiList = [];
 
   Map<String, String> headers = {'content-type': 'application/json'};
+
+  late BuildContext _context;
 
   /// 初期動作
   @override
@@ -125,6 +128,8 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
   ///
   @override
   Widget build(BuildContext context) {
+    _context = context;
+
     final backgroundColor = Colors.white.withOpacity(0.3);
 
     return Scaffold(
@@ -144,7 +149,7 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
           IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
-              Navigator.pop(context);
+              backHomeScreen(context: context);
             },
           ),
         ],
@@ -291,9 +296,7 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
       );
     }
 
-    await Future.delayed(const Duration(seconds: 3));
-
-    Navigator.pop(context);
+    backHomeScreen(context: _context);
   }
 
   ///

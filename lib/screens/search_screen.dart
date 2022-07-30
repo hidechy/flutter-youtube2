@@ -13,7 +13,10 @@ import '../model/video.dart';
 
 import '../utilities/utility.dart';
 
-import './components/video_list_item.dart';
+import 'components/video_list_item.dart';
+
+import 'components/functions.dart';
+
 import 'bunrui_list_screen.dart';
 
 //////////////////////////////////////////////////////////////////////////
@@ -48,7 +51,7 @@ class SearchScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
-              Navigator.pop(context);
+              backHomeScreen(context: context);
             },
           ),
         ],

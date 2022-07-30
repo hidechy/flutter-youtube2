@@ -13,7 +13,9 @@ import '../model/video.dart';
 
 import '../utilities/utility.dart';
 
-import './components/video_list_item.dart';
+import 'components/video_list_item.dart';
+
+import 'components/functions.dart';
 
 class ThreeDaysPickupScreen extends StatelessWidget {
   ThreeDaysPickupScreen({Key? key}) : super(key: key);
@@ -43,7 +45,9 @@ class ThreeDaysPickupScreen extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              backHomeScreen(context: context);
+            },
           ),
         ],
       ),
