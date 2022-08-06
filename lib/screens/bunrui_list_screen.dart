@@ -45,9 +45,9 @@ class BunruiListScreen extends ConsumerWidget {
 
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.close),
+            icon: Icon(Icons.backspace),
             onPressed: () {
-              backHomeScreen(context: context);
+              Navigator.pop(context);
             },
           ),
         ],
