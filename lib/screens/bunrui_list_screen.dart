@@ -8,9 +8,9 @@ import '../model/video.dart';
 import '../utilities/utility.dart';
 
 import '../view_model/bunrui_list_view_model.dart';
+import '../view_model/video_bunrui_view_model.dart';
 
 import 'components/video_list_item.dart';
-
 import 'components/functions.dart';
 
 class BunruiListScreen extends ConsumerWidget {
@@ -45,8 +45,10 @@ class BunruiListScreen extends ConsumerWidget {
 
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.backspace),
+            icon: const Icon(Icons.backspace),
             onPressed: () {
+              ref.watch(videoSearchProvider.notifier).getVideoData();
+
               Navigator.pop(context);
             },
           ),
@@ -295,6 +297,8 @@ class BunruiListScreen extends ConsumerWidget {
       );
 
       if (_backHomeScreen) {
+        _ref.watch(videoSearchProvider.notifier).getVideoData();
+
         backHomeScreen(context: _context);
       }
     }
@@ -324,6 +328,8 @@ class BunruiListScreen extends ConsumerWidget {
       );
 
       if (_backHomeScreen) {
+        _ref.watch(videoSearchProvider.notifier).getVideoData();
+
         backHomeScreen(context: _context);
       }
     }

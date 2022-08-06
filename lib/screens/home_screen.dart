@@ -1,22 +1,17 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:convert';
-
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
-
-import '../model/bunrui.dart';
-import '../model/youtube_data.dart';
-import '../model/video.dart';
 
 import '../utilities/utility.dart';
+
+import '../view_model/video_bunrui_view_model.dart';
 
 import 'bunrui_setting_screen.dart';
 import 'bunrui_list_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   HomeScreen({Key? key}) : super(key: key);
 
   final Utility _utility = Utility();
@@ -24,8 +19,10 @@ class HomeScreen extends StatelessWidget {
   late BuildContext _context;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     _context = context;
+
+    ref.watch(videoSearchProvider.notifier).getVideoData();
 
     return Scaffold(
       appBar: AppBar(
@@ -117,6 +114,8 @@ class HomeScreen extends StatelessWidget {
               return IconButton(
                 icon: const Icon(Icons.refresh, color: Colors.yellowAccent),
                 onPressed: () {
+                  ref.watch(videoSearchProvider.notifier).getVideoData();
+
                   Navigator.pushNamed(context, '/');
                 },
               );
@@ -372,57 +371,5 @@ class HomeScreen extends StatelessWidget {
         },
       ),
     );
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////
-final videoBunruiProvider =
-    StateNotifierProvider.autoDispose<VideoBunruiStateNotifier, List<String>>(
-        (ref) {
-  return VideoBunruiStateNotifier([])..getVideoBunrui();
-});
-
-//////////////////////////////////////////////////////////////////////////
-class VideoBunruiStateNotifier extends StateNotifier<List<String>> {
-  VideoBunruiStateNotifier(List<String> state) : super(state);
-
-  ///
-  void getVideoBunrui() async {
-    try {
-      String url = "http://toyohide.work/BrainLog/api/getBunruiName";
-      Map<String, String> headers = {'content-type': 'application/json'};
-      Response response = await post(Uri.parse(url), headers: headers);
-      final bunrui = bunruiFromJson(response.body);
-      state = bunrui.data;
-    } catch (e) {
-      throw e.toString();
-    }
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////
-final videoSearchProvider =
-    StateNotifierProvider.autoDispose<VideoSearchStateNotifier, List<Video>>(
-        (ref) {
-  return VideoSearchStateNotifier([])..getVideoData();
-});
-
-//////////////////////////////////////////////////////////////////////////
-class VideoSearchStateNotifier extends StateNotifier<List<Video>> {
-  VideoSearchStateNotifier(List<Video> state) : super(state);
-
-  ///
-  void getVideoData() async {
-    try {
-      String url = "http://toyohide.work/BrainLog/api/getYoutubeList";
-      Map<String, String> headers = {'content-type': 'application/json'};
-      String body = json.encode({"bunrui": 'blank'});
-      Response response =
-          await post(Uri.parse(url), headers: headers, body: body);
-      final youtubeData = youtubeDataFromJson(response.body);
-      state = youtubeData.data;
-    } catch (e) {
-      throw e.toString();
-    }
   }
 }

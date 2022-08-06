@@ -7,12 +7,12 @@ void backHomeScreen({required BuildContext context}) {
     context,
     PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 3000),
-      //
-      pageBuilder: (context, animation, secondaryAnimation) => HomeScreen(),
-      //
-      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-          FadeTransition(opacity: animation, child: child),
-      //
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return HomeScreen();
+      },
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
     ),
   );
 }

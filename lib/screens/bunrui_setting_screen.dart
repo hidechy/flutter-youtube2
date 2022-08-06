@@ -1,6 +1,9 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 
@@ -13,6 +16,7 @@ import '../model/video.dart';
 import '../logic/logic.dart';
 
 import '../utilities/utility.dart';
+import '../view_model/video_bunrui_view_model.dart';
 import 'components/functions.dart';
 
 class BunruiSettingScreen extends StatefulWidget {
@@ -168,15 +172,28 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
                       decoration: const InputDecoration(labelText: '分類'),
                     ),
                   ),
-                  SizedBox(
-                    width: 100,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.redAccent.withOpacity(0.3),
-                      ),
-                      onPressed: () => _dispBunruiItem(),
-                      child: const Text('分類する'),
-                    ),
+                  Consumer(
+                    builder:
+                        (BuildContext context, WidgetRef ref, Widget? child) {
+                      return SizedBox(
+                        width: 100,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.redAccent.withOpacity(0.3),
+                          ),
+                          onPressed: () {
+                            _dispBunruiItem();
+
+                            ref
+                                .watch(videoSearchProvider.notifier)
+                                .getVideoData();
+
+                            backHomeScreen(context: _context);
+                          },
+                          child: const Text('分類する'),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -290,13 +307,11 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
     }
 
     if (bunruiItems.isNotEmpty) {
-      _logic.uploadBunruiItems(
+      await _logic.uploadBunruiItems(
         bunrui: bunruiText.text,
         bunruiItems: bunruiItems,
       );
     }
-
-    backHomeScreen(context: _context);
   }
 
   ///

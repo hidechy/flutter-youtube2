@@ -13,8 +13,9 @@ import '../model/youtube_data.dart';
 
 import '../utilities/utility.dart';
 
-import 'components/video_list_item.dart';
+import '../view_model/video_bunrui_view_model.dart';
 
+import 'components/video_list_item.dart';
 import 'components/functions.dart';
 
 class VideoRecyclingScreen extends ConsumerWidget {
@@ -286,6 +287,8 @@ class VideoRecyclingScreen extends ConsumerWidget {
         bunruiItems: _list,
         bunrui: 'recycling',
       );
+
+      _ref.watch(videoSearchProvider.notifier).getVideoData();
 
       backHomeScreen(context: _context);
     }
