@@ -8,8 +8,8 @@ import '../utilities/utility.dart';
 
 import '../view_model/video_bunrui_view_model.dart';
 
-import 'bunrui_setting_screen.dart';
 import 'bunrui_list_screen.dart';
+import 'bunrui_setting_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -18,11 +18,15 @@ class HomeScreen extends ConsumerWidget {
 
   late BuildContext _context;
 
+  ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     _context = context;
 
-    ref.watch(videoSearchProvider.notifier).getVideoData();
+    final videoBunruiState = ref.watch(videoBunruiProvider);
+
+    final videoSearchState = ref.watch(videoSearchProvider);
+    final videoSearchViewModel = ref.watch(videoSearchProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -109,16 +113,12 @@ class HomeScreen extends ConsumerWidget {
               Navigator.pushNamed(context, '/search');
             },
           ),
-          Consumer(
-            builder: (BuildContext context, WidgetRef ref, Widget? child) {
-              return IconButton(
-                icon: const Icon(Icons.refresh, color: Colors.yellowAccent),
-                onPressed: () {
-                  ref.watch(videoSearchProvider.notifier).getVideoData();
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.yellowAccent),
+            onPressed: () {
+              videoSearchViewModel.getVideoData();
 
-                  Navigator.pushNamed(context, '/');
-                },
-              );
+              Navigator.pushNamed(context, '/');
             },
           ),
         ],
@@ -130,138 +130,116 @@ class HomeScreen extends ConsumerWidget {
         fit: StackFit.expand,
         children: [
           _utility.getBackGround(context: context),
-          Consumer(
-            builder: (BuildContext context, WidgetRef ref, Widget? child) {
-              final videoBunrui = ref.watch(videoBunruiProvider);
-
-              final videoList = ref.watch(videoSearchProvider);
-
-              return Column(
+          Column(
+            children: [
+              Expanded(
+                child: _bunruiButtonList(videoBunrui: videoBunruiState),
+              ),
+              Column(
                 children: [
-                  Expanded(
-                    child: _bunruiButtonList(videoBunrui: videoBunrui),
-                  ),
-                  Column(
-                    children: [
-                      //-----------------------------//
-                      // 左右の半円と点線を引く方法
-
-                      Row(
+                  getDotLine(),
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.redAccent.withOpacity(0.3),
+                      ),
+                      onPressed: () {
+                        _goBunruiSettingScreen(bunrui: 'undefined');
+                      },
+                      child: Row(
                         children: [
-                          SizedBox(
-                            height: 20,
-                            width: 10,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: Colors.redAccent.withOpacity(0.5),
-                                borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(10),
-                                  bottomRight: Radius.circular(10),
-                                ),
+                          const Text('分類する'),
+                          const SizedBox(width: 20),
+                          Container(
+                            width: 30,
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              videoSearchState.length.toString(),
+                              style: const TextStyle(
+                                color: Colors.redAccent,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: LayoutBuilder(
-                                builder: (BuildContext context,
-                                    BoxConstraints constraints) {
-                                  return Flex(
-                                    direction: Axis.horizontal,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: List.generate(
-                                      (constraints.constrainWidth() / 30)
-                                          .floor(),
-                                      (index) {
-                                        return const SizedBox(
-                                          width: 5,
-                                          height: 3,
-                                          child: DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              color: Colors.redAccent,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                            width: 10,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: Colors.redAccent.withOpacity(0.5),
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  bottomLeft: Radius.circular(10),
-                                ),
-                              ),
-                            ),
-                          )
                         ],
                       ),
-
-                      //-----------------------------//
-
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.all(10),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.redAccent.withOpacity(0.3),
-                          ),
-                          onPressed: () {
-                            _goBunruiSettingScreen(bunrui: 'undefined');
-                          },
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Center(
-                                  child: Row(
-                                    children: [
-                                      const Text('分類する'),
-                                      const SizedBox(width: 20),
-                                      Container(
-                                        width: 30,
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: Text(
-                                          videoList.length.toString(),
-                                          style: const TextStyle(
-                                            color: Colors.redAccent,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
-              );
-            },
+              ),
+            ],
           ),
         ],
       ),
+    );
+  }
+
+  ///
+  Widget getDotLine() {
+    return Row(
+      children: [
+        SizedBox(
+          height: 20,
+          width: 10,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.redAccent.withOpacity(0.5),
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return Flex(
+                  direction: Axis.horizontal,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: List.generate(
+                    (constraints.constrainWidth() / 30).floor(),
+                    (index) {
+                      return const SizedBox(
+                        width: 5,
+                        height: 3,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 20,
+          width: 10,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.redAccent.withOpacity(0.5),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -283,9 +261,6 @@ class HomeScreen extends ConsumerWidget {
           },
           child: Stack(
             children: [
-              //--------------------
-              // ずれた半円
-
               Positioned(
                 right: -50,
                 top: -40,
@@ -301,6 +276,8 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
               ),
+
+              //
 
               Positioned(
                 left: -50,
@@ -318,7 +295,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
 
-              //--------------------
+              //
 
               Container(
                 padding: const EdgeInsets.only(top: 20, left: 50, bottom: 20),
