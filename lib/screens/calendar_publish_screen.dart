@@ -1,59 +1,70 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:collection';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import '../model/video.dart';
 import '../utilities/utility.dart';
 import '../view_model/youtube_list_view_model.dart';
-
 import 'components/calendar_display_item.dart';
-
 import 'components/functions.dart';
 
 class CalendarPublishScreen extends ConsumerWidget {
   CalendarPublishScreen({Key? key}) : super(key: key);
 
-  final DateTime _currentDate = DateTime.now();
-
-  final EventList<Event> _markedDateMap = EventList(events: {});
-
   final Utility _utility = Utility();
 
-  List<Video> videoList = [];
+  Map<DateTime, List> eventsList = {};
 
+  late WidgetRef _ref;
   late BuildContext _context;
 
   ///
+  int getHashCode(DateTime key) {
+    return key.day * 1000000 + key.month * 10000 + key.year;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    _ref = ref;
     _context = context;
 
-    ////////////////////////////////
-    var exCurrentDate = _currentDate.toString().split(' ');
+    final focusDayState = ref.watch(focusDayProvider);
+    final focusDayViewModel = ref.watch(focusDayProvider.notifier);
+    focusDayViewModel.setDateTime(dateTime: DateTime.now());
 
-    var exDate = exCurrentDate[0].split('-');
+    final selectedDayViewModel = ref.watch(selectedDayProvider.notifier);
 
     final videoHistoryState = ref.watch(videoHistoryProvider);
-    videoList = videoHistoryState;
 
+    //--------------------------------------------- event
+
+    var keepYmd = '';
     for (var i = 0; i < videoHistoryState.length; i++) {
-      var exPubDate = videoHistoryState[i].pubdate.split('-');
-
-      if (exPubDate[0] == exDate[0]) {
-        _markedDateMap.add(
-          DateTime.parse(videoHistoryState[i].pubdate),
-          Event(
-            date: DateTime.parse(videoHistoryState[i].pubdate),
-            icon: const Icon(Icons.star),
-          ),
-        );
+      if (videoHistoryState[i].pubdate != keepYmd) {
+        eventsList[DateTime.parse(videoHistoryState[i].pubdate)] = [];
       }
+
+      eventsList[DateTime.parse(videoHistoryState[i].pubdate)]
+          ?.add(videoHistoryState[i].pubdate);
+
+      keepYmd = videoHistoryState[i].pubdate;
     }
-    ////////////////////////////////
+
+    final _events = LinkedHashMap<DateTime, List>(
+      equals: isSameDay,
+      hashCode: getHashCode,
+    )..addAll(eventsList);
+
+    List getEventForDay(DateTime day) {
+      return _events[day] ?? [];
+    }
+    //--------------------------------------------- event
 
     return Scaffold(
       appBar: AppBar(
@@ -80,34 +91,65 @@ class CalendarPublishScreen extends ConsumerWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          _utility.getBackGround(context: context),
+          _utility.getBackGround(),
           Column(
             children: [
-              Expanded(
-                child: CalendarCarousel<Event>(
-                  minSelectedDate: DateTime(2020, 1, 1),
-                  markedDatesMap: _markedDateMap,
-                  locale: 'JA',
-                  todayBorderColor: Colors.orangeAccent.withOpacity(0.8),
-                  todayButtonColor: Colors.orangeAccent.withOpacity(0.1),
-                  selectedDayButtonColor: Colors.greenAccent.withOpacity(0.1),
-                  thisMonthDayBorderColor: Colors.grey,
-                  weekendTextStyle:
-                      const TextStyle(fontSize: 16.0, color: Colors.red),
-                  weekdayTextStyle: const TextStyle(color: Colors.grey),
-                  dayButtonColor: Colors.black.withOpacity(0.3),
-                  onDayPressed: onDayPressed,
-                  weekFormat: false,
-                  selectedDateTime: _currentDate,
-                  daysHaveCircularBorder: false,
-                  customGridViewPhysics: const NeverScrollableScrollPhysics(),
-                  daysTextStyle:
-                      const TextStyle(fontSize: 16.0, color: Colors.white),
-                  todayTextStyle:
-                      const TextStyle(fontSize: 16.0, color: Colors.white),
-                  headerTextStyle: const TextStyle(fontSize: 18.0),
-                  onCalendarChanged: onCalendarChanged,
+              TableCalendar(
+                eventLoader: getEventForDay,
+
+                ///
+                calendarStyle: const CalendarStyle(
+                  todayDecoration: BoxDecoration(color: Colors.transparent),
+                  selectedDecoration: BoxDecoration(
+                    color: Colors.indigo,
+                    shape: BoxShape.circle,
+                  ),
+
+                  ///
+                  rangeHighlightColor: Color(0xFFBBDDFF),
+
+                  ///
+                  todayTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                  selectedTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                  rangeStartTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                  rangeEndTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                  disabledTextStyle: TextStyle(color: Colors.grey),
+                  holidayTextStyle: TextStyle(color: Color(0xFF5C6BC0)),
+                  weekendTextStyle: TextStyle(color: Colors.white),
+
+                  ///
+                  markerDecoration: BoxDecoration(color: Colors.white),
+                  rangeStartDecoration: BoxDecoration(color: Color(0xFF6699FF)),
+                  rangeEndDecoration: BoxDecoration(color: Color(0xFF6699FF)),
+                  holidayDecoration: BoxDecoration(
+                    border: Border.fromBorderSide(
+                      BorderSide(
+                        color: Color(0xFF9FA8DA),
+                      ),
+                    ),
+                  ),
                 ),
+
+                ///
+                headerStyle: const HeaderStyle(formatButtonVisible: false),
+                firstDay: DateTime.utc(2020, 1, 1),
+                lastDay: DateTime.utc(2030, 12, 31),
+                focusedDay: focusDayState,
+
+                ///
+                selectedDayPredicate: (day) {
+                  return isSameDay(ref.watch(selectedDayProvider), day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  selectedDayViewModel.setDateTime(dateTime: selectedDay);
+                  focusDayViewModel.setDateTime(dateTime: focusedDay);
+
+                  onDayPressed(date: selectedDay);
+                },
+
+                onPageChanged: (focusedDay) {
+                  focusedDay = focusedDay;
+                },
               ),
             ],
           ),
@@ -117,10 +159,17 @@ class CalendarPublishScreen extends ConsumerWidget {
   }
 
   ///
-  void onDayPressed(DateTime date, List<Event> events) {
+  void onDayPressed({required DateTime date}) {
     var exDate = date.toString().split(' ');
 
-    final thisDateData = getThisDateData(date: exDate[0]);
+    final videoHistoryState = _ref.watch(videoHistoryProvider);
+
+    List<Video> thisDateData = [];
+    for (var i = 0; i < videoHistoryState.length; i++) {
+      if (exDate[0] == videoHistoryState[i].pubdate) {
+        thisDateData.add(videoHistoryState[i]);
+      }
+    }
 
     if (thisDateData.isEmpty) {
       Fluttertoast.showToast(
@@ -137,27 +186,44 @@ class CalendarPublishScreen extends ConsumerWidget {
       context: _context,
       builder: (_) {
         return CalendarDisplayItem(
-          pubget: 'publish',
+          pubget: 'get',
           date: exDate[0],
           thisDateData: thisDateData,
         );
       },
     );
   }
+}
+
+////////////////////////////////////////////////////////////
+
+final focusDayProvider =
+    StateNotifierProvider.autoDispose<FocusDayStateNotifier, DateTime>((ref) {
+  return FocusDayStateNotifier();
+});
+
+class FocusDayStateNotifier extends StateNotifier<DateTime> {
+  FocusDayStateNotifier() : super(DateTime.now());
 
   ///
-  List<Video> getThisDateData({required String date}) {
-    List<Video> list = [];
-
-    for (var i = 0; i < videoList.length; i++) {
-      if (date == videoList[i].pubdate) {
-        list.add(videoList[i]);
-      }
-    }
-
-    return list;
+  void setDateTime({required DateTime dateTime}) async {
+    state = dateTime;
   }
+}
+
+////////////////////////////////////////////////////////////
+
+final selectedDayProvider =
+    StateNotifierProvider.autoDispose<SelectedDayStateNotifier, DateTime>(
+        (ref) {
+  return SelectedDayStateNotifier();
+});
+
+class SelectedDayStateNotifier extends StateNotifier<DateTime> {
+  SelectedDayStateNotifier() : super(DateTime.now());
 
   ///
-  void onCalendarChanged(DateTime date) async {}
+  void setDateTime({required DateTime dateTime}) async {
+    state = dateTime;
+  }
 }
