@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../model/video.dart';
 
+import '../bunrui_list_screen.dart';
 import 'video_list_item.dart';
 
 class CalendarDisplayItem extends ConsumerWidget {
@@ -72,7 +73,34 @@ class CalendarDisplayItem extends ConsumerWidget {
                                           child: Text(value.bunrui),
                                         ),
                                       ),
-                                      Expanded(child: Container()),
+                                      Expanded(
+                                        child: MouseRegion(
+                                          cursor: SystemMouseCursors.click,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      BunruiListScreen(
+                                                          bunrui: value.bunrui),
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 50,
+                                              child: const Text('Go'),
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                color: Colors.yellowAccent
+                                                    .withOpacity(0.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
