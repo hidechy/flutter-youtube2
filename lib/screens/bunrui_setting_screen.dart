@@ -352,10 +352,13 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
     showDialog(
       context: context,
       builder: (_) {
-        return ThumbnailAlert(
-          shitamiItems: shitamiItems,
-          bunruiList: _bunruiList,
-          bunruiText: bunruiText,
+        return Dialog(
+          insetPadding: EdgeInsets.symmetric(horizontal: 30),
+          child: ThumbnailAlert(
+            shitamiItems: shitamiItems,
+            bunruiList: _bunruiList,
+            bunruiText: bunruiText,
+          ),
         );
       },
     );
@@ -386,6 +389,7 @@ class ThumbnailAlert extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.zero,
       title: ElevatedButton(
         style: ElevatedButton.styleFrom(
           primary: Colors.redAccent.withOpacity(0.3),
@@ -447,9 +451,16 @@ class ThumbnailAlert extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) {
-        return BunruiAlert(
-          bunruiList: bunruiList,
-          bunruiText: bunruiText,
+        return Dialog(
+          backgroundColor: Colors.white.withOpacity(0.3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          insetPadding: EdgeInsets.all(30),
+          child: BunruiAlert(
+            bunruiList: bunruiList,
+            bunruiText: bunruiText,
+          ),
         );
       },
     );
@@ -473,6 +484,7 @@ class BunruiAlert extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.zero,
       content: SizedBox(
         height: MediaQuery.of(context).size.height - 50,
         child: SingleChildScrollView(

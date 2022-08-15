@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../model/video.dart';
@@ -22,6 +23,7 @@ class CalendarDisplayItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
+      insetPadding: EdgeInsets.zero,
       backgroundColor: Colors.transparent,
       title: Container(
         alignment: Alignment.topCenter,
@@ -35,6 +37,7 @@ class CalendarDisplayItem extends ConsumerWidget {
       ),
       content: SizedBox(
         height: MediaQuery.of(context).size.height - 50,
+        width: double.infinity,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

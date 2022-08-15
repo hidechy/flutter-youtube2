@@ -4,7 +4,8 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
+//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../model/video.dart';
@@ -170,24 +171,31 @@ class CalendarPublishScreen extends ConsumerWidget {
       }
     }
 
-    if (thisDateData.isEmpty) {
-      Fluttertoast.showToast(
-        msg: "No Data.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.yellowAccent.withOpacity(0.3),
-      );
-
-      return;
-    }
+    // if (thisDateData.isEmpty) {
+    //   Fluttertoast.showToast(
+    //     msg: "No Data.",
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.CENTER,
+    //     backgroundColor: Colors.yellowAccent.withOpacity(0.3),
+    //   );
+    //
+    //   return;
+    // }
 
     showDialog(
       context: _context,
       builder: (_) {
-        return CalendarDisplayItem(
-          pubget: 'get',
-          date: exDate[0],
-          thisDateData: thisDateData,
+        return Dialog(
+          backgroundColor: Colors.white.withOpacity(0.3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          insetPadding: EdgeInsets.all(30),
+          child: CalendarDisplayItem(
+            pubget: 'get',
+            date: exDate[0],
+            thisDateData: thisDateData,
+          ),
         );
       },
     );

@@ -186,10 +186,17 @@ class CalendarGetScreen extends ConsumerWidget {
     showDialog(
       context: _context,
       builder: (_) {
-        return CalendarDisplayItem(
-          pubget: 'get',
-          date: exDate[0],
-          thisDateData: thisDateData,
+        return Dialog(
+          backgroundColor: Colors.white.withOpacity(0.3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          insetPadding: EdgeInsets.all(30),
+          child: CalendarDisplayItem(
+            pubget: 'get',
+            date: exDate[0],
+            thisDateData: thisDateData,
+          ),
         );
       },
     );
