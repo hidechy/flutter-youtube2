@@ -353,7 +353,11 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
       context: context,
       builder: (_) {
         return Dialog(
-          insetPadding: EdgeInsets.symmetric(horizontal: 30),
+          backgroundColor: Colors.blueGrey.withOpacity(0.3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          insetPadding: EdgeInsets.all(30),
           child: ThumbnailAlert(
             shitamiItems: shitamiItems,
             bunruiList: _bunruiList,
@@ -452,7 +456,7 @@ class ThumbnailAlert extends StatelessWidget {
       context: context,
       builder: (_) {
         return Dialog(
-          backgroundColor: Colors.white.withOpacity(0.3),
+          backgroundColor: Colors.blueGrey.withOpacity(0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),

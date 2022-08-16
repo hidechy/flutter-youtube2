@@ -187,7 +187,7 @@ class CalendarGetScreen extends ConsumerWidget {
       context: _context,
       builder: (_) {
         return Dialog(
-          backgroundColor: Colors.white.withOpacity(0.3),
+          backgroundColor: Colors.blueGrey.withOpacity(0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
