@@ -357,7 +357,7 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
-          insetPadding: EdgeInsets.all(30),
+          insetPadding: const EdgeInsets.all(30),
           child: ThumbnailAlert(
             shitamiItems: shitamiItems,
             bunruiList: _bunruiList,
@@ -460,7 +460,7 @@ class ThumbnailAlert extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
-          insetPadding: EdgeInsets.all(30),
+          insetPadding: const EdgeInsets.all(30),
           child: BunruiAlert(
             bunruiList: bunruiList,
             bunruiText: bunruiText,

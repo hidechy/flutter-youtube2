@@ -190,7 +190,7 @@ class CalendarPublishScreen extends ConsumerWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
-          insetPadding: EdgeInsets.all(30),
+          insetPadding: const EdgeInsets.all(30),
           child: CalendarDisplayItem(
             pubget: 'get',
             date: exDate[0],

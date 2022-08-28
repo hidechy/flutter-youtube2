@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/utils.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../model/video.dart';
@@ -73,7 +73,11 @@ class CalendarDisplayItem extends ConsumerWidget {
                                         flex: 5,
                                         child: Container(
                                           alignment: Alignment.center,
-                                          child: Text(value.bunrui),
+                                          child: Text(
+                                            (value.bunrui == 0)
+                                                ? '-----'
+                                                : value.bunrui,
+                                          ),
                                         ),
                                       ),
                                       Expanded(
