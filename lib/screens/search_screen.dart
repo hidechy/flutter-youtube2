@@ -116,7 +116,7 @@ class SearchScreen extends StatelessWidget {
                       },
                       child: const Text('Search'),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.redAccent.withOpacity(0.3),
+                        backgroundColor: Colors.redAccent.withOpacity(0.3),
                       ),
                     );
                   }),

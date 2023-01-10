@@ -137,7 +137,7 @@ class BunruiListScreen extends ConsumerWidget {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.redAccent.withOpacity(0.3),
+                          backgroundColor: Colors.redAccent.withOpacity(0.3),
                         ),
                         onPressed: () => _uploadSpecialItems(),
                         child: const Text('選出変更'),
@@ -147,7 +147,7 @@ class BunruiListScreen extends ConsumerWidget {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.redAccent.withOpacity(0.3),
+                          backgroundColor: Colors.redAccent.withOpacity(0.3),
                         ),
                         onPressed: () => _uploadEraseItems(),
                         child: const Text('分類消去'),
@@ -157,7 +157,7 @@ class BunruiListScreen extends ConsumerWidget {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.redAccent.withOpacity(0.3),
+                          backgroundColor: Colors.redAccent.withOpacity(0.3),
                         ),
                         onPressed: () => _uploadDeleteItems(),
                         child: const Text('削除'),

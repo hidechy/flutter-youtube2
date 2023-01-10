@@ -143,7 +143,7 @@ class HomeScreen extends ConsumerWidget {
                     margin: const EdgeInsets.all(10),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.redAccent.withOpacity(0.3),
+                        backgroundColor: Colors.redAccent.withOpacity(0.3),
                       ),
                       onPressed: () {
                         _goBunruiSettingScreen(bunrui: 'undefined');

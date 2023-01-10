@@ -144,7 +144,7 @@ class VideoRecyclingScreen extends ConsumerWidget {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.redAccent.withOpacity(0.3),
+                          backgroundColor: Colors.redAccent.withOpacity(0.3),
                         ),
                         onPressed: () => _uploadRecyclingItems(),
                         child: const Text('復活'),

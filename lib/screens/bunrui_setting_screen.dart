@@ -177,7 +177,7 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
                         width: 100,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.redAccent.withOpacity(0.3),
+                            backgroundColor: Colors.redAccent.withOpacity(0.3),
                           ),
                           onPressed: () {
                             _dispBunruiItem();
@@ -233,7 +233,7 @@ class _BunruiSettingScreenState extends State<BunruiSettingScreen> {
                 margin: const EdgeInsets.all(10),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.redAccent.withOpacity(0.3),
+                    backgroundColor: Colors.redAccent.withOpacity(0.3),
                   ),
                   onPressed: () => displayThumbnail(),
                   child: const Text('サムネイル表示'),
@@ -396,7 +396,7 @@ class ThumbnailAlert extends StatelessWidget {
       insetPadding: EdgeInsets.zero,
       title: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: Colors.redAccent.withOpacity(0.3),
+          backgroundColor: Colors.redAccent.withOpacity(0.3),
         ),
         onPressed: () => displayBunruiName(context: context),
         child: const Text('分類名表示'),
