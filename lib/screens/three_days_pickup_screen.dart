@@ -5,13 +5,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:youtubeplayer2/utilities/utility.dart';
 
 import 'bunrui_list_screen.dart';
 
 import '../model/youtube_data.dart';
 import '../model/video.dart';
-
-import '../utilities/utility.dart';
 
 import 'components/video_list_item.dart';
 

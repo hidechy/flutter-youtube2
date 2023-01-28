@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:youtubeplayer2/utilities/utility.dart';
 
 import 'dart:convert';
 
@@ -13,7 +14,6 @@ import '../model/video.dart';
 
 import '../logic/logic.dart';
 
-import '../utilities/utility.dart';
 import '../view_model/video_bunrui_view_model.dart';
 import 'components/functions.dart';
 
